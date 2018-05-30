@@ -121,30 +121,30 @@ void Keyboard (unsigned char key, int x, int y){
     case 'j':
     case 'J':
         pos_car_x -= 1;
-        viraCarro += 1;
+        viraCarro += 2;
         break;
     case 'l':
     case 'L':
         pos_car_x += 1;
-        viraCarro -= 1;
+        viraCarro -= 2;
         break;
     case 'K': pos_car_z += 1;break;
     case 'k': pos_car_z += 1;break;
     case 'I': pos_car_z -= 1;break;
     case 'i': pos_car_z -= 1;break;
 
-    case 'w': z_0 -= 1; break;
-    case 'W': z_0 -= 1; break;
-    case 's': z_0 += 1; break;
-    case 'S': z_0 += 1; break;
-    case 'a': x_0 -= 1; break;
-    case 'A': x_0 -= 1; break;
-    case 'd': x_0 += 1; break;
-    case 'D': x_0 += 1; break;
-    case 'e': y_0 += 1; break;
-    case 'E': y_0 += 1; break;
-    case 'q': y_0 -= 1; break;
-    case 'Q': y_0 -= 1; break;
+    case 'w': z_0 -= 3; break;
+    case 'W': z_0 -= 3; break;
+    case 's': z_0 += 3; break;
+    case 'S': z_0 += 3; break;
+    case 'a': x_0 -= 3; break;
+    case 'A': x_0 -= 3; break;
+    case 'd': x_0 += 3; break;
+    case 'D': x_0 += 3; break;
+    case 'e': y_0 += 3; break;
+    case 'E': y_0 += 3; break;
+    case 'q': y_0 -= 3; break;
+    case 'Q': y_0 -= 3; break;
     case 'v': theta += 1; break;
     case 'V': theta -= 1; break;
     case 'f': aspect += 0.2; break;
@@ -196,30 +196,16 @@ void TimerFunc(int value){
     if(flagEst){
         glutTimerFunc(1000/fps, TimerFunc, 1);
         if(viraCarro > 0){
-            viraCarro = viraCarro * 0.96;
+            viraCarro = viraCarro * 0.95;
         }else if (viraCarro < 0){
-            viraCarro = viraCarro + (0.4);
+            viraCarro = viraCarro * 0.95;
         }
     }
     glutPostRedisplay();
 }
 void DesenhaEstrada(){
-    int i;
+    int i,j;
     glColor3fv(verde);
-    for(i = -50; i <= 13; i++){
-    glPushMatrix();
-        glTranslatef( 97.5, 0, i*10 + passoEst);
-        glutSolidCube(5);
-    glPopMatrix();
-    glPushMatrix();
-        glTranslatef(-97.5, 0, i*10 + passoEst);
-        glutSolidCube(5);
-    glPopMatrix();
-    }
-
-}
-void DesenhaGrade(){
-    int i;
     glBegin(GL_LINES);
         glColor3fv(verde);
         for(i = -10; i <= 10; i++){
@@ -232,23 +218,48 @@ void DesenhaGrade(){
             glVertex3f(-100, 0, i * 10 + passoEst);
         }
     glEnd();
-    glLineWidth(4.0);
-    glBegin(GL_LINES);
-        glColor3fv(vermelho);
-        glVertex3f(0, 0,0);
-        glVertex3f(500, 0,0);
-    glEnd();
-    glBegin(GL_LINES);
-        glColor3fv(amarelo);
-        glVertex3f(0, 0,0);
-        glVertex3f(0, 500,0);
-    glEnd();
-    glBegin(GL_LINES);
-        glColor3fv(laranja);
-        glVertex3f(0, 0,0);
-        glVertex3f(0, 0,500);
-    glEnd();
+    for(i = -50; i <= 13; i++){
+        glPushMatrix();
+            glTranslatef( 97.5, 0, i*10 + passoEst);
+            glutSolidCube(5);
+        glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-97.5, 0, i*10 + passoEst);
+            glutSolidCube(5);
+        glPopMatrix();
+    }
     glLineWidth(1.0);
+    glColor3fv(rosaBri);
+    glPushMatrix();
+    glBegin(GL_LINE_STRIP);
+        glVertex3f(0,0,0);
+    for(j = 0; j < 90; j ++){
+        glVertex3f(500 * cos(j*PI/180)-500, 0, -500 * sin(j*PI/180));
+    }
+        glVertex3f(-500,0,-500);
+    glEnd();
+    glPopMatrix();
+    glColor3fv(verdeGrama);
+    glLineWidth(1.0);
+}
+void DesenhaGrade(){
+//    glLineWidth(4.0);
+//    glBegin(GL_LINES);
+//        glColor3fv(vermelho);
+//        glVertex3f(0, 0,0);
+//        glVertex3f(500, 0,0);
+//    glEnd();
+//    glBegin(GL_LINES);
+//        glColor3fv(amarelo);
+//        glVertex3f(0, 0,0);
+//        glVertex3f(0, 500,0);
+//    glEnd();
+//    glBegin(GL_LINES);
+//        glColor3fv(laranja);
+//        glVertex3f(0, 0,0);
+//        glVertex3f(0, 0,500);
+//    glEnd();
+//    glLineWidth(1.0);
 }
 void Desenha(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
