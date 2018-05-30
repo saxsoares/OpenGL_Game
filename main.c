@@ -41,7 +41,7 @@ GLdouble raio = 50;
 GLfloat coordX = 3.003, coordZ = 3.003, passo = 0.5, sinal = 1;
 GLfloat pos_car_x=0, pos_car_z = 105, viraCarro = 0;
 
-GLfloat passoEst = 0; GLboolean flagEst = 0; GLint fps = 60;
+GLfloat passoEst = 0; GLfloat passoCurva = 0; GLboolean flagEst = 0; GLint fps = 60;
 
 void Msg(char *string, GLfloat x, GLfloat y){
         glRasterPos2f(x,y);
@@ -193,6 +193,7 @@ void SpecialKeys (int key, int x, int y){
 
 void TimerFunc(int value){
     passoEst = passoEst < 9 ? passoEst + 1 : 0;
+    passoCurva = passoCurva < 24.0 ? passoCurva + 1 : 0;
     if(flagEst){
         glutTimerFunc(1000/fps, TimerFunc, 1);
         if(viraCarro > 0){
@@ -205,6 +206,7 @@ void TimerFunc(int value){
 }
 void DesenhaEstrada(){
     int i,j;
+    float curvaX, curvaZ;
     glColor3fv(verde);
     glBegin(GL_LINES);
         glColor3fv(verde);
@@ -230,15 +232,15 @@ void DesenhaEstrada(){
     }
     glLineWidth(1.0);
     glColor3fv(rosaBri);
-    glPushMatrix();
-    glBegin(GL_LINE_STRIP);
-        glVertex3f(0,0,0);
-    for(j = 0; j < 90; j ++){
-        glVertex3f(500 * cos(j*PI/180)-500, 0, -500 * sin(j*PI/180));
+    for(j = -1; j > -500; j = j-25){
+        curvaZ = j + passoCurva;
+        curvaX = sqrt(pow(500,2)-pow(curvaZ,2)) - 500;
+
+        glPushMatrix();
+            glTranslatef(curvaX, 0, curvaZ + 50);
+            glutSolidCube(5);
+        glPopMatrix();
     }
-        glVertex3f(-500,0,-500);
-    glEnd();
-    glPopMatrix();
     glColor3fv(verdeGrama);
     glLineWidth(1.0);
 }
