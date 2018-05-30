@@ -231,13 +231,17 @@ void DesenhaEstrada(){
         glPopMatrix();
     }
     glLineWidth(1.0);
-    glColor3fv(rosaBri);
+    glColor3fv(verde);
     for(j = -1; j > -500; j = j-25){
         curvaZ = j + passoCurva;
         curvaX = sqrt(pow(500,2)-pow(curvaZ,2)) - 500;
 
         glPushMatrix();
-            glTranslatef(curvaX, 0, curvaZ + 50);
+            glTranslatef(curvaX+97.5, 0, curvaZ );
+            glutSolidCube(5);
+        glPopMatrix();
+        glPushMatrix();
+            glTranslatef(curvaX-97.5, 0, curvaZ );
             glutSolidCube(5);
         glPopMatrix();
     }
