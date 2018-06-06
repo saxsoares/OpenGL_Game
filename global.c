@@ -64,7 +64,7 @@ void InitScreen(){
         glLoadIdentity(); //carrega a matrix de identidade
 
         gluLookAt(x_0, y_0, z_0,
-                  x_ref, y_ref, z_0-60,
+                  x_ref, y_ref, z_ref,
                   V_x, V_y, V_z);
     glPopMatrix();
 }

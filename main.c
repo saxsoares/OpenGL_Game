@@ -7,16 +7,17 @@ GLfloat abobora[]={.99,.06,.75},     amarelo[]={1,1,0},     azul[]={0,0,1},     
         verdeGrama[]={.49,.99,0},     verdeEsc[]={0,.39,0}, preto[]={0,0,0},     marrom[]={.65,.16,.16},
         roadColorA[]={.42,.42,.42},  roadColorB[]={.41,.41,.41}, grassColorA[]={.06,.78,.06}, grassColorB[]={0.0,.6,0.0};
 
-GLfloat angX = 0, angY = 0, angZ = 0, passoCam = 10, fps = 60;
-GLdouble theta=90,  aspect=1,   d_near=25, d_far=800;
-GLdouble x_0=0,     y_0=35.0,   z_0=-150,
-         x_ref=0,   y_ref=0,    z_ref=0,
+GLfloat angX = 0, angY = 0, angZ = 0, passoCam = 1, fps = 60;
+GLdouble theta=90,  aspect=1,   d_near=1, d_far=1800;
+GLdouble x_0=0,     y_0=13.0,   z_0=-175,
+         x_ref=0,   y_ref=0,    z_ref=-210,
          V_x=0,     V_y=1,      V_z = 0,
          xCam = 0,  yCam= 0,    zCam=0;
 
-Array Linhas; GLint N; GLfloat x = 0, dx = 0;
-GLfloat segL = 25, pistaWidht = 100;
-GLfloat playerX = 0, carPosX = 0, carPosY = 0, carPosZ = -180;
+Array Linhas; 
+GLint N;
+GLfloat segL = 15, pistaWidht = 30, x = 0, dx = 0;;
+GLfloat playerX = 0, carPosX = 0, carPosY = 0, carPosZ = -194, s_car = 0.3;
 GLboolean anima = GL_FALSE;
 
 void Keyboard (unsigned char key, int x, int y){
@@ -25,21 +26,23 @@ void Keyboard (unsigned char key, int x, int y){
             exit (0);
             break;
         case 'i':
-        case 'I':
-            pos += segL;
-            break;
+        case 'I':  pos += 1;  break;
         case 'k':
-        case 'K':
-            pos -= segL;
-            break;
+        case 'K':  pos -= 1;  break;
         case 'j':
-        case 'J':
-            playerX += segL;
-            break;
+        case 'J':  playerX += 1;  break;
         case 'l':
-        case 'L':
-            playerX -= segL;
-            break;
+        case 'L':  playerX -= 1;  break;
+        case 'n': pistaWidht += 1; break;
+        case 'm': pistaWidht -= 1; break;
+        case 't':  y_ref += 1;  break;
+        case 'g':  y_ref -= 1;  break;
+        case 'h':  z_ref += 1;  break;
+        case 'f':  z_ref -= 1; break;
+        case 'r':  s_car += 0.1; break;
+        case 'y':  s_car -= 0.1; break;
+        case 'z': segL += 1; break;
+        case 'x': segL -= 1; break;
         case 'w': z_0 -= passoCam; break;
         case 'W': z_0 -= passoCam; break;
         case 's': z_0 += passoCam; break;
@@ -69,23 +72,23 @@ void Keyboard (unsigned char key, int x, int y){
     while(pos < 0) pos += pistaLenght;
     startPos = pos/segL;
     
-    printf("pos: %d - startPos: %d - N: %d\n", pos, startPos, N);
+    printf("pos: %d - startPos: %d - N: %d\nx_0: %.2f - y_0: %.2f - z_0: %.2f - s_car: %.2f - pista: %.2f\nz_ref: %.2f", pos, startPos, N, x_0, y_0, z_0, s_car, pistaWidht, z_ref);
     InitScreen();
 }
 void SpecialKeys (int key, int x, int y){
     switch(key){
         case GLUT_KEY_RIGHT:
-            carPosX += segL;
+            carPosX += 1;
             break;
         case GLUT_KEY_LEFT:
-            carPosX -= segL;
+            carPosX -= 1;
 
             break;
         case GLUT_KEY_DOWN:
-            carPosZ -= segL ;
+            carPosZ -= 1 ;
             break;
         case GLUT_KEY_UP:
-            carPosZ += segL ;
+            carPosZ += 1 ;
             break;
         case GLUT_KEY_PAGE_UP:
             d_far += 2;
@@ -93,10 +96,18 @@ void SpecialKeys (int key, int x, int y){
         case GLUT_KEY_PAGE_DOWN:
             d_far -= 2;
             break;
+        case GLUT_KEY_F1:
+            d_near += 2;
+            break;
+        case GLUT_KEY_F2:
+            d_near -= 2;
+            break;
+
         default:
             break;
     }
     InitScreen();
+    printf("carPosx: %.2f - carPosZ: %.2f - d_far: %.2f - d_near: %.2f\n", carPosX, carPosZ, d_far, d_near);
 }
 
 void TimerFunc(int value){
@@ -113,7 +124,7 @@ void DesenhaEstrada(){
     dx = 0;
    
     // Draw road /
-    for(int n = startPos; n < startPos+500; n++){
+    for(int n = startPos; n < startPos+800; n++){
         l = &(Linhas.array[n%N]);
         x += dx;
         dx += l->curve;
@@ -124,9 +135,14 @@ void DesenhaEstrada(){
 
         p = &(Linhas.array[(n-1)%N]);
         
-        DesenhaSeg(grass,  playerX - p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), 800,             playerX - l->x, l->z+pos-(n>=N?pistaLenght+segL:0), 800,     -2);
-        DesenhaSeg(rumble, playerX - p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), pistaWidht *1.2, playerX - l->x, l->z+pos-(n>=N?pistaLenght+segL:0), pistaWidht*1.2, -1);
-        DesenhaSeg(road,   playerX - p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), pistaWidht,      playerX - l->x, l->z+pos-(n>=N?pistaLenght+segL:0), pistaWidht,      0);
+        DesenhaSeg(grass,  carPosX + playerX - p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), 1200,  
+                           carPosX + playerX - l->x, l->z+pos-(n>=N?pistaLenght+segL:0), 800,     -2);
+        
+        DesenhaSeg(rumble, carPosX + playerX - p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), pistaWidht *1.2, 
+                           carPosX + playerX - l->x, l->z+pos-(n>=N?pistaLenght+segL:0), pistaWidht*1.2, -1);
+        
+        DesenhaSeg(road,   carPosX + playerX - p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), pistaWidht, 
+                           carPosX + playerX - l->x, l->z+pos-(n>=N?pistaLenght+segL:0), pistaWidht,      0);
         
     }
 }
@@ -138,6 +154,7 @@ void Desenha(){
     glPopMatrix();
     glPushMatrix();
         glTranslatef(carPosX, carPosY, carPosZ);
+        glScalef(s_car, s_car, s_car);
         DesenhaCarro();
     glPopMatrix();
 
@@ -155,14 +172,14 @@ int main(int argc, char *argv[]){
     glutSetKeyRepeat(1);
     
     initArray(&Linhas, 802);
-    for(int i = 0; i < 800; i++){
+    for(int i = 0; i < 1800; i++){
         Line_t line;
         line.x = 0;
         line.y = 0;
         line.z = -i * segL;
         line.curve = 0;
-        if(i > 0 && i < 300) line.curve = 0.5;
-        if(i > 300 && i < 500) line.curve = -0.5;
+        if(i > 300 && i < 600) line.curve = 0.5;
+        if(i > 600 && i < 500) line.curve = -0.5;
         insertArray(&Linhas, line);
     }
     N = Linhas.used;
