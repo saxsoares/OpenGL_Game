@@ -41,7 +41,7 @@ extern GLdouble x_0,    y_0,    z_0,
          xCam,   yCam,   zCam;
 extern GLfloat playerX;
 
-GLint startPos, pos;
+GLfloat startPos, pos;
 
 int main(int, char**);
 void initArray(Array *a, size_t initialSize);

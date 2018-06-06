@@ -1,4 +1,5 @@
 #include "global.h"
+#include <unistd.h>
 
 GLfloat abobora[]={.99,.06,.75},     amarelo[]={1,1,0},     azul[]={0,0,1},      azulCeu[]={.53,.81,.98}, azulEsc[]={0,0,.55}, 
         azulMarinho[]={.07,.04,.56}, azulCiano[]={0,1,1},   branco[]={1,1,1},    cinza[]={.5,.5,.5},      cinzaClaro[]={.7,.7,.7},
@@ -9,15 +10,15 @@ GLfloat abobora[]={.99,.06,.75},     amarelo[]={1,1,0},     azul[]={0,0,1},     
 
 GLfloat angX = 0, angY = 0, angZ = 0, passoCam = 1, fps = 60;
 GLdouble theta=90,  aspect=1,   d_near=1, d_far=1800;
-GLdouble x_0=0,     y_0=13.0,   z_0=-175,
+GLdouble x_0=0,     y_0=42.0,   z_0=-118,
          x_ref=0,   y_ref=0,    z_ref=-210,
          V_x=0,     V_y=1,      V_z = 0,
          xCam = 0,  yCam= 0,    zCam=0;
 
 Array Linhas; 
-GLint N;
-GLfloat segL = 15, pistaWidht = 30, x = 0, dx = 0;;
-GLfloat playerX = 0, carPosX = 0, carPosY = 0, carPosZ = -194, s_car = 0.3;
+GLint N, TimeFlag = 0;
+GLfloat segL = 15, pistaWidht = 70, x = 0, dx = 0;;
+GLfloat playerX = 0, carPosX = 0, carPosY = 0, carPosZ = -194, s_car = 1;
 GLboolean anima = GL_FALSE;
 
 void Keyboard (unsigned char key, int x, int y){
@@ -26,44 +27,22 @@ void Keyboard (unsigned char key, int x, int y){
             exit (0);
             break;
         case 'i':
-        case 'I':  pos += 1;  break;
+        case 'I':  pos += segL;  break;
         case 'k':
-        case 'K':  pos -= 1;  break;
+        case 'K':  pos -= segL;  break;
         case 'j':
         case 'J':  playerX += 1;  break;
         case 'l':
         case 'L':  playerX -= 1;  break;
-        case 'n': pistaWidht += 1; break;
-        case 'm': pistaWidht -= 1; break;
-        case 't':  y_ref += 1;  break;
-        case 'g':  y_ref -= 1;  break;
-        case 'h':  z_ref += 1;  break;
-        case 'f':  z_ref -= 1; break;
-        case 'r':  s_car += 0.1; break;
-        case 'y':  s_car -= 0.1; break;
-        case 'z': segL += 1; break;
-        case 'x': segL -= 1; break;
-        case 'w': z_0 -= passoCam; break;
-        case 'W': z_0 -= passoCam; break;
-        case 's': z_0 += passoCam; break;
-        case 'S': z_0 += passoCam; break;
-        case 'a': x_0 -= passoCam; break;
-        case 'A': x_0 -= passoCam; break;
-        case 'd': x_0 += passoCam; break;
-        case 'D': x_0 += passoCam; break;
-        case 'e': y_0 += passoCam; break;
-        case 'E': y_0 += passoCam; break;
-        case 'q': y_0 -= passoCam; break;
-        case 'Q': y_0 -= passoCam; break;
-        case 'v': theta += 1; break;
-        case 'V': theta -= 1; break;
-
+       
+    
         case 'B':
             anima = GL_TRUE;
-            TimerFunc(1000/fps);
+            TimeFlag++;
+            TimerFunc(TimeFlag-1);
             break;
         case 'b':
-            anima = GL_FALSE;
+            TimeFlag--;
             break;
         default: break;
     }
@@ -72,48 +51,33 @@ void Keyboard (unsigned char key, int x, int y){
     while(pos < 0) pos += pistaLenght;
     startPos = pos/segL;
     
-    printf("pos: %d - startPos: %d - N: %d\nx_0: %.2f - y_0: %.2f - z_0: %.2f - s_car: %.2f - pista: %.2f\nz_ref: %.2f", pos, startPos, N, x_0, y_0, z_0, s_car, pistaWidht, z_ref);
     InitScreen();
 }
 void SpecialKeys (int key, int x, int y){
     switch(key){
-        case GLUT_KEY_RIGHT:
-            carPosX += 1;
-            break;
-        case GLUT_KEY_LEFT:
-            carPosX -= 1;
-
-            break;
-        case GLUT_KEY_DOWN:
-            carPosZ -= 1 ;
-            break;
-        case GLUT_KEY_UP:
-            carPosZ += 1 ;
-            break;
-        case GLUT_KEY_PAGE_UP:
-            d_far += 2;
-            break;
-        case GLUT_KEY_PAGE_DOWN:
-            d_far -= 2;
-            break;
-        case GLUT_KEY_F1:
-            d_near += 2;
-            break;
-        case GLUT_KEY_F2:
-            d_near -= 2;
-            break;
-
         default:
             break;
     }
-    InitScreen();
-    printf("carPosx: %.2f - carPosZ: %.2f - d_far: %.2f - d_near: %.2f\n", carPosX, carPosZ, d_far, d_near);
 }
 
 void TimerFunc(int value){
-    pos += 1;
-    if(anima)
-        glutTimerFunc(1000/fps, TimerFunc, 1);
+    int f = value;
+    if (Linhas.array[(int)startPos].curve != 0 ){
+        if(f == 0){
+            pos += segL;
+            usleep(100000);
+        }
+        else ;
+    }
+    else
+        pos = pos + 1;
+
+    while(pos >= pistaLenght) pos -= pistaLenght;
+    while(pos < 0) pos += pistaLenght;
+    startPos = pos/segL;
+    printf("startPos: %.2f - pos: %.2f - x: %.2f - dx: %.2f\n",startPos, pos, x, dx );
+    if(anima && f < TimeFlag)
+        glutTimerFunc(1000/fps, TimerFunc, f);
     glutPostRedisplay();
 }
 
@@ -124,7 +88,7 @@ void DesenhaEstrada(){
     dx = 0;
    
     // Draw road /
-    for(int n = startPos; n < startPos+800; n++){
+    for(int n = startPos; n < startPos+600; n++){
         l = &(Linhas.array[n%N]);
         x += dx;
         dx += l->curve;
@@ -135,8 +99,8 @@ void DesenhaEstrada(){
 
         p = &(Linhas.array[(n-1)%N]);
         
-        DesenhaSeg(grass,  carPosX + playerX - p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), 1200,  
-                           carPosX + playerX - l->x, l->z+pos-(n>=N?pistaLenght+segL:0), 800,     -2);
+        DesenhaSeg(grass,  carPosX + playerX - p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), 2000,  
+                           carPosX + playerX - l->x, l->z+pos-(n>=N?pistaLenght+segL:0), 2000,     -2);
         
         DesenhaSeg(rumble, carPosX + playerX - p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), pistaWidht *1.2, 
                            carPosX + playerX - l->x, l->z+pos-(n>=N?pistaLenght+segL:0), pistaWidht*1.2, -1);
@@ -172,14 +136,14 @@ int main(int argc, char *argv[]){
     glutSetKeyRepeat(1);
     
     initArray(&Linhas, 802);
-    for(int i = 0; i < 1800; i++){
+    for(int i = 0; i < 700; i++){
         Line_t line;
         line.x = 0;
         line.y = 0;
         line.z = -i * segL;
         line.curve = 0;
-        if(i > 300 && i < 600) line.curve = 0.5;
-        if(i > 600 && i < 500) line.curve = -0.5;
+        if(i > 0 && i < 100) line.curve = 0.5;
+        if(i > 200 && i < 600) line.curve = -0.5;
         insertArray(&Linhas, line);
     }
     N = Linhas.used;
