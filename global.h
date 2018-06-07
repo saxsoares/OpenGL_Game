@@ -53,6 +53,7 @@ void InitScreen();
 void MovimentaMouse(int, int);
 void MouseFunc(int, int, int, int);
 void Keyboard(unsigned char, int, int);
+void UpKeyboard(unsigned char, int, int);
 void SpecialKeys(int, int, int);
 void Timer(int);
 void TimerFunc(int );

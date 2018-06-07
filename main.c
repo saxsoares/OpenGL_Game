@@ -1,5 +1,6 @@
 #include "global.h"
-#include <unistd.h>
+#define false GL_FALSE
+#define true GL_TRUE
 
 GLfloat abobora[]={.99,.06,.75},     amarelo[]={1,1,0},     azul[]={0,0,1},      azulCeu[]={.53,.81,.98}, azulEsc[]={0,0,.55}, 
         azulMarinho[]={.07,.04,.56}, azulCiano[]={0,1,1},   branco[]={1,1,1},    cinza[]={.5,.5,.5},      cinzaClaro[]={.7,.7,.7},
@@ -18,32 +19,24 @@ GLdouble x_0=0,     y_0=42.0,   z_0=-118,
 Array Linhas; 
 GLint N, TimeFlag = 0;
 GLfloat segL = 15, pistaWidht = 70, x = 0, dx = 0;;
-GLfloat playerX = 0, carPosX = 0, carPosY = 0, carPosZ = -194, s_car = 1;
+GLfloat playerX = 0, carPosX = 0, carPosY = 0, carPosZ = -194, s_car = 1, viraCarro = 0.1;
 GLboolean anima = GL_FALSE;
+GLboolean botoes[] = {false, false, false, false};
 
 void Keyboard (unsigned char key, int x, int y){
     switch (key){
         case 27:            // ESC
             exit (0);
             break;
-        case 'i':
-        case 'I':  pos += segL;  break;
-        case 'k':
-        case 'K':  pos -= segL;  break;
-        case 'j':
-        case 'J':  playerX += 1;  break;
-        case 'l':
-        case 'L':  playerX -= 1;  break;
-       
-    
-        case 'B':
-            anima = GL_TRUE;
-            TimeFlag++;
-            TimerFunc(TimeFlag-1);
-            break;
-        case 'b':
-            TimeFlag--;
-            break;
+        case 'w':
+        case 'W':  botoes[0] = true;  break;
+        case 's':
+        case 'S':  botoes[1] = true;  break;
+        case 'a':
+        case 'A':  botoes[2] = true;  break;
+        case 'd':
+        case 'D':  botoes[3] = true;  break;
+        
         default: break;
     }
    
@@ -53,8 +46,30 @@ void Keyboard (unsigned char key, int x, int y){
     
     InitScreen();
 }
+void UpKeyboard (unsigned char key, int x, int y){
+    switch (key){
+        case 'w':
+        case 'W':  botoes[0] = false;  break;
+        case 's':
+        case 'S':  botoes[1] = false;  break;
+        case 'a':
+        case 'A':  botoes[2] = false;  break;
+        case 'd':
+        case 'D':  botoes[3] = false;  break;
+        
+    }
+}
+
 void SpecialKeys (int key, int x, int y){
     switch(key){
+        case GLUT_KEY_PAGE_UP:
+            anima = GL_TRUE;
+            TimeFlag++;
+            TimerFunc(TimeFlag-1);
+            break;
+        case GLUT_KEY_PAGE_DOWN:
+            TimeFlag--;
+            break;
         default:
             break;
     }
@@ -62,22 +77,14 @@ void SpecialKeys (int key, int x, int y){
 
 void TimerFunc(int value){
     int f = value;
-    if (Linhas.array[(int)startPos].curve != 0 ){
-        if(f == 0){
-            pos += segL;
-            usleep(100000);
-        }
-        else ;
-    }
-    else
-        pos = pos + 1;
-
+    pos += segL;
     while(pos >= pistaLenght) pos -= pistaLenght;
     while(pos < 0) pos += pistaLenght;
     startPos = pos/segL;
-    printf("startPos: %.2f - pos: %.2f - x: %.2f - dx: %.2f\n",startPos, pos, x, dx );
+   
+    
     if(anima && f < TimeFlag)
-        glutTimerFunc(1000/fps, TimerFunc, f);
+        glutTimerFunc(1, TimerFunc, f);
     glutPostRedisplay();
 }
 
@@ -93,9 +100,9 @@ void DesenhaEstrada(){
         x += dx;
         dx += l->curve;
         l->x = x;
-        road   = (n/3)%2 ? roadColorA  : roadColorB;
-        grass  = (n/3)%2 ? grassColorA : grassColorB;
-        rumble = (n/3)%2 ? preto : branco;
+        road   = (n/11)%2 ? roadColorA  : roadColorB;
+        grass  = (n/11)%2 ? grassColorA : grassColorB;
+        rumble = (n/11)%2 ? preto : branco;
 
         p = &(Linhas.array[(n-1)%N]);
         
@@ -119,9 +126,37 @@ void Desenha(){
     glPushMatrix();
         glTranslatef(carPosX, carPosY, carPosZ);
         glScalef(s_car, s_car, s_car);
+        glTranslatef(0,0,-5);
+        glRotatef(viraCarro, 0, 1, 0);
+        glRotatef(0.25*viraCarro, 0, 0, 1);
+        glTranslatef(0,0, 5);
         DesenhaCarro();
     glPopMatrix();
 
+    if(botoes[0]){
+        pos += 2;
+    }
+    if(botoes[1]){
+        pos -= 2;
+    }
+    if(botoes[2]){ 
+        playerX += 1.2;
+        viraCarro = viraCarro > 15 ? viraCarro : viraCarro + 0.75;
+        if(anima) pos -= abs(playerX) * 0.05;
+    }
+    if(botoes[3]){
+        playerX -= 1.2;
+        viraCarro = viraCarro <-15 ? viraCarro : viraCarro - 0.75;
+        if(anima) pos -= abs(playerX) * 0.05;
+    } 
+
+    if(!botoes[2] && !botoes[3]){
+        if(viraCarro > 0){
+            viraCarro = viraCarro * 0.95;
+        }else if (viraCarro < 0){
+            viraCarro = viraCarro * 0.95;
+        }
+    }
     glFlush();
     glutSwapBuffers();
 }
@@ -136,14 +171,16 @@ int main(int argc, char *argv[]){
     glutSetKeyRepeat(1);
     
     initArray(&Linhas, 802);
-    for(int i = 0; i < 700; i++){
+    for(int i = 0; i < 1500; i++){
         Line_t line;
         line.x = 0;
         line.y = 0;
         line.z = -i * segL;
         line.curve = 0;
-        if(i > 0 && i < 100) line.curve = 0.5;
-        if(i > 200 && i < 600) line.curve = -0.5;
+        if(i > 0 && i < 100) line.curve = 0.1;
+        if(i > 200 && i < 400) line.curve = -0.1;
+        if(i > 500 && i < 800) line.curve = 0.1;
+        if(i > 900 && i < 1200) line.curve = -0.1;
         insertArray(&Linhas, line);
     }
     N = Linhas.used;
@@ -155,6 +192,7 @@ int main(int argc, char *argv[]){
         glutPassiveMotionFunc(MovimentaMouse);
         glutMouseFunc(MouseFunc);
         glutKeyboardFunc(Keyboard);
+        glutKeyboardUpFunc(UpKeyboard);
         glutSpecialFunc(SpecialKeys);
         glutTimerFunc(0,TimerFunc,1);
         glutIdleFunc(IdleFunc);
