@@ -106,14 +106,14 @@ void DesenhaEstrada(){
 
         p = &(Linhas.array[(n-1)%N]);
         
-        DesenhaSeg(grass,  carPosX + playerX - p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), 2000,  
-                           carPosX + playerX - l->x, l->z+pos-(n>=N?pistaLenght+segL:0), 2000,     -2);
+        DesenhaSeg(grass,   playerX - p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), 2000,  
+                            playerX - l->x, l->z+pos-(n>=N?pistaLenght+segL:0), 2000,     -2);
         
-        DesenhaSeg(rumble, carPosX + playerX - p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), pistaWidht *1.2, 
-                           carPosX + playerX - l->x, l->z+pos-(n>=N?pistaLenght+segL:0), pistaWidht*1.2, -1);
+        DesenhaSeg(rumble, playerX - p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), pistaWidht *1.2, 
+                           playerX - l->x, l->z+pos-(n>=N?pistaLenght+segL:0), pistaWidht*1.2, -1);
         
-        DesenhaSeg(road,   carPosX + playerX - p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), pistaWidht, 
-                           carPosX + playerX - l->x, l->z+pos-(n>=N?pistaLenght+segL:0), pistaWidht,      0);
+        DesenhaSeg(road,   playerX - p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), pistaWidht, 
+                           playerX - l->x, l->z+pos-(n>=N?pistaLenght+segL:0), pistaWidht,      0);
         
     }
 }
@@ -128,7 +128,7 @@ void Desenha(){
         glScalef(s_car, s_car, s_car);
         glTranslatef(0,0,-5);
         glRotatef(viraCarro, 0, 1, 0);
-        glRotatef(0.25*viraCarro, 0, 0, 1);
+        glRotatef(0.15*viraCarro, 0, 0, 1);
         glTranslatef(0,0, 5);
         DesenhaCarro();
     glPopMatrix();
@@ -140,14 +140,14 @@ void Desenha(){
         pos -= 2;
     }
     if(botoes[2]){ 
-        playerX += 1.2;
-        viraCarro = viraCarro > 15 ? viraCarro : viraCarro + 0.75;
-        if(anima) pos -= abs(playerX) * 0.05;
+        carPosX -= 1.3;
+        viraCarro = viraCarro > 12 ? viraCarro : viraCarro + 0.75;
+        if(anima) pos -= abs(carPosX) * 0.05;
     }
     if(botoes[3]){
-        playerX -= 1.2;
-        viraCarro = viraCarro <-15 ? viraCarro : viraCarro - 0.75;
-        if(anima) pos -= abs(playerX) * 0.05;
+        carPosX += 1.3;
+        viraCarro = viraCarro <-12 ? viraCarro : viraCarro - 0.75;
+        if(anima) pos -= abs(carPosX) * 0.05;
     } 
 
     if(!botoes[2] && !botoes[3]){
