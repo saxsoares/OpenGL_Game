@@ -77,7 +77,7 @@ void SpecialKeys (int key, int x, int y){
 
 void TimerFunc(int value){
     int f = value;
-    pos += segL;
+    pos += 1;
     while(pos >= pistaLenght) pos -= pistaLenght;
     while(pos < 0) pos += pistaLenght;
     startPos = pos/segL;
@@ -100,20 +100,21 @@ void DesenhaEstrada(){
         x += dx;
         dx += l->curve;
         l->x = x;
+        
         road   = (n/11)%2 ? roadColorA  : roadColorB;
         grass  = (n/11)%2 ? grassColorA : grassColorB;
         rumble = (n/11)%2 ? preto : branco;
 
         p = &(Linhas.array[(n-1)%N]);
         
-        DesenhaSeg(grass,   playerX - p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), 2000,  
-                            playerX - l->x, l->z+pos-(n>=N?pistaLenght+segL:0), 2000,     -2);
+        DesenhaSeg(grass,   playerX - p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), p->y-2,  2000,  
+                            playerX - l->x, l->z+pos-(n>=N?pistaLenght+segL:0),   l->y-2, 2000);
         
-        DesenhaSeg(rumble, playerX - p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), pistaWidht *1.2, 
-                           playerX - l->x, l->z+pos-(n>=N?pistaLenght+segL:0), pistaWidht*1.2, -1);
+        DesenhaSeg(rumble, playerX - p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), p->y-1, pistaWidht *1.2, 
+                           playerX - l->x, l->z+pos-(n>=N?pistaLenght+segL:0),   l->y-1, pistaWidht *1.2);
         
-        DesenhaSeg(road,   playerX - p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), pistaWidht, 
-                           playerX - l->x, l->z+pos-(n>=N?pistaLenght+segL:0), pistaWidht,      0);
+        DesenhaSeg(road,   playerX - p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), p->y, pistaWidht, 
+                           playerX - l->x, l->z+pos-(n>=N?pistaLenght+segL:0),   l->y, pistaWidht);
         
     }
 }
@@ -127,8 +128,8 @@ void Desenha(){
         glTranslatef(carPosX, carPosY, carPosZ);
         glScalef(s_car, s_car, s_car);
         glTranslatef(0,0,-5);
-        glRotatef(viraCarro, 0, 1, 0);
-        glRotatef(0.15*viraCarro, 0, 0, 1);
+        glRotatef(viraCarro+2*Linhas.array[(int)startPos].curve, 0, 1, 0);
+        glRotatef(-0.5*viraCarro-20*Linhas.array[(int)startPos].curve, 0, 0, 1);
         glTranslatef(0,0, 5);
         DesenhaCarro();
     glPopMatrix();
@@ -141,12 +142,12 @@ void Desenha(){
     }
     if(botoes[2]){ 
         carPosX -= 1.3;
-        viraCarro = viraCarro > 12 ? viraCarro : viraCarro + 0.75;
+        viraCarro = viraCarro > 25 ? viraCarro : viraCarro + 0.8;
         if(anima) pos -= abs(carPosX) * 0.05;
     }
     if(botoes[3]){
         carPosX += 1.3;
-        viraCarro = viraCarro <-12 ? viraCarro : viraCarro - 0.75;
+        viraCarro = viraCarro <-25 ? viraCarro : viraCarro - 0.8;
         if(anima) pos -= abs(carPosX) * 0.05;
     } 
 
@@ -177,10 +178,11 @@ int main(int argc, char *argv[]){
         line.y = 0;
         line.z = -i * segL;
         line.curve = 0;
-        if(i > 0 && i < 100) line.curve = 0.1;
-        if(i > 200 && i < 400) line.curve = -0.1;
+        if(i > 100 && i < 200) line.curve = 0.1;
+        if(i > 300 && i < 500) line.curve = -0.1;
         if(i > 500 && i < 800) line.curve = 0.1;
         if(i > 900 && i < 1200) line.curve = -0.1;
+        
         insertArray(&Linhas, line);
     }
     N = Linhas.used;

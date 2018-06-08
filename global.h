@@ -63,7 +63,7 @@ void Desenha();
 void DesenhaGrade();
 void DesenhaCarro();
 void DesenhaEstrada();
-void DesenhaSeg(GLfloat *cor, float x1, float y1, float w1, float x2, float y2, float w2, float y);
+void DesenhaSeg(GLfloat *cor, float x1, float z1, float y1, float w1, float x2, float z2, float y2, float w2);
 void IdleFunc();
 
 #endif

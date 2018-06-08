@@ -88,12 +88,12 @@ void MouseFunc(int botao, int estado, int x, int y){
             break ;
     }
 }
-void DesenhaSeg(GLfloat *cor, float x1, float z1, float w1, float x2, float z2, float w2, float y){
+void DesenhaSeg(GLfloat *cor, float x1, float z1, float y1, float w1, float x2, float z2, float y2, float w2){
     glColor3fv(cor);
     glBegin(GL_QUADS);
-        glVertex3f(x1-w1,y,z1);
-        glVertex3f(x2-w2,y,z2);
-        glVertex3f(x2+w2,y,z2);
-        glVertex3f(x1+w1,y,z1);
+        glVertex3f(x1-w1,y1,z1);
+        glVertex3f(x2-w2,y2,z2);
+        glVertex3f(x2+w2,y2,z2);
+        glVertex3f(x1+w1,y1,z1);
     glEnd();
 }
