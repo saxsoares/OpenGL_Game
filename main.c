@@ -19,7 +19,7 @@ GLdouble x_0=0,     y_0=42.0,   z_0=-118,
 
 Array Linhas;
 GLint N, TimeFlag = 0, volta = 0;
-GLfloat segL = 15, pistaWidht = 70, x = 0, dx = 0;;
+GLfloat segL = 15, pistaWidth = 70, x = 0, dx = 0;;
 GLfloat playerX = 0, carPosX = 0, carPosY = 0, carPosZ = -194, s_car = 1, viraCarro = 0.1, speed = 1;
 GLboolean anima = GL_FALSE;
 GLboolean botoes[] = {false, false, false, false};
@@ -79,12 +79,29 @@ void SpecialKeys (int key, int x, int y){
 
 void TimerFunc(int value){
     int f = value;
-    pos += 2;
-    while(pos >= pistaLenght) pos -= pistaLenght;
+    pos += 1 + speed;
+    while(pos >= pistaLenght) pos =0;	//Troquei de "pos -= pistaLenght;" para o atual para evitar inconsistencias com a virada da volta.
     while(pos < 0) pos += pistaLenght;
     startPos = pos/segL;
 
-
+	//Controle do céu
+	if(volta%4 == 3 && (int)pos%18000!=0)glClearColor(.0f, .0f, pos/18000, .0f);
+	else if (volta%4 == 1 && (int)pos%18000!=0)glClearColor(.0f, .0f, 1-(pos/18000), .0f);
+	
+	//Controle de velocidade
+	if((int)pos%18000 == 0) volta++; 	//Cada volta no mapa tem 18000 posições.
+	if(speed<35+(volta*2)) speed += 0.1;//Aceleracao maxima 35, aumenta em 2 para cada volta.
+	if(speed<20) speed += 0.1;			//Aceleracao 0.2 quando abaixo de speed 20.
+	if(speed<5) speed += 0.1;			//Aceleracao 0.3 quando abaixo de speed 05.
+	
+	//Inércia nas curvas
+	if((pos>1500 && pos<3000) || (pos>7500 && pos<12000)){ //Curva para a direita.
+		if(carPosX >= -(pistaWidth/2+25)) carPosX--;	
+	}
+	if((pos>4500 && pos<7500) || (pos>14500 && pos<18000)){ //Curva para a esquerda.
+		if(carPosX <= pistaWidth/2+20) carPosX++;
+	}	
+	
     if(anima && f < TimeFlag)
         glutTimerFunc(1, TimerFunc, f);
     glutPostRedisplay();
@@ -112,11 +129,11 @@ void DesenhaEstrada(){
         DesenhaSeg(grass,   p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), -2,  2000,
                             l->x, l->z+pos-(n>=N?pistaLenght+segL:0),   -2, 2000);
 
-        DesenhaSeg(rumble, p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), -1, pistaWidht *1.2,
-                           l->x, l->z+pos-(n>=N?pistaLenght+segL:0),   -1, pistaWidht *1.2);
+        DesenhaSeg(rumble, p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), -1, pistaWidth *1.2,
+                           l->x, l->z+pos-(n>=N?pistaLenght+segL:0),   -1, pistaWidth *1.2);
 
-        DesenhaSeg(road,   p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), 0, pistaWidht,
-                           l->x, l->z+pos-(n>=N?pistaLenght+segL:0),   0,pistaWidht);
+        DesenhaSeg(road,   p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), 0, pistaWidth,
+                           l->x, l->z+pos-(n>=N?pistaLenght+segL:0),   0,pistaWidth);
 
         }
 
@@ -154,12 +171,12 @@ void Desenha(){
         pos -= 2;
     }
     if(botoes[2]){
-        carPosX = carPosX >=  -pistaWidht/2-30? carPosX - 1.3: carPosX;
+        carPosX = carPosX >=  -pistaWidth/2-30? carPosX - 1.3: carPosX;
         viraCarro = viraCarro > 25 ? viraCarro : viraCarro + 0.8;
         if(anima) pos -= abs(carPosX) * 0.05;
     }
     if(botoes[3]){
-        carPosX = carPosX <=  pistaWidht/2+30? carPosX + 1.3: carPosX;
+        carPosX = carPosX <=  pistaWidth/2+30? carPosX + 1.3: carPosX;
         viraCarro = viraCarro <-25 ? viraCarro : viraCarro - 0.8;
         if(anima) pos -= abs(carPosX) * 0.05;
     }
@@ -174,6 +191,7 @@ void Desenha(){
     glFlush();
     glutSwapBuffers();
 }
+
 int main(int argc, char *argv[]){
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -212,7 +230,7 @@ int main(int argc, char *argv[]){
         glutTimerFunc(0,TimerFunc,1);
         glutIdleFunc(IdleFunc);
         glutDisplayFunc(Desenha);
-        glClearColor(.0f, .0f, .0f, .0f); //define a cor de fundo
+        glClearColor(0.0f, 0.0f, 1.0f, 0.0f); //define a cor de fundo
         glEnable(GL_DEPTH_TEST); //habilita o teste de profundidade
         InitScreen();
     glutMainLoop();
