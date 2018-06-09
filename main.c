@@ -47,6 +47,7 @@ void Keyboard (unsigned char key, int x, int y){
 
     InitScreen();
 }
+
 void UpKeyboard (unsigned char key, int x, int y){
     switch (key){
         case 'w':
@@ -144,7 +145,7 @@ void DesenhaEstrada(){
             glRotatef(2*Linhas.array[(int)startPos].curve, 0, 1, 0);
             glRotatef(-20*Linhas.array[(int)startPos].curve, 0, 0, 1);
             glTranslatef(0,0, 5);
-            DesenhaCarro();
+            DesenhaCarro(0, 0, 1);
         glPopMatrix();
 
 }
@@ -161,17 +162,19 @@ void Desenha(){
         glRotatef(viraCarro+2*Linhas.array[(int)startPos].curve, 0, 1, 0);
         glRotatef(-0.5*viraCarro-20*Linhas.array[(int)startPos].curve, 0, 0, 1);
         glTranslatef(0,0, 5);
-        DesenhaCarro();
+        DesenhaCarro(1, 0, 0);
     glPopMatrix();
 
-    if(botoes[0]){
+    /* Controle de velocidade do carro é automático, não precisa se mover com W e S.
+	if(botoes[0]){
         pos += 2;
     }
     if(botoes[1]){
         pos -= 2;
     }
-    if(botoes[2]){
-        carPosX = carPosX >=  -pistaWidth/2-30? carPosX - 1.3: carPosX;
+    */
+	if(botoes[2]){
+        carPosX = carPosX >=  -(pistaWidth/2+30)? carPosX - 1.3: carPosX;
         viraCarro = viraCarro > 25 ? viraCarro : viraCarro + 0.8;
         if(anima) pos -= abs(carPosX) * 0.05;
     }

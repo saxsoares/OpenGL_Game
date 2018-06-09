@@ -61,7 +61,7 @@ void Reshape(int, int);
 void Msg(char *, GLfloat , GLfloat );
 void Desenha();
 void DesenhaGrade();
-void DesenhaCarro();
+void DesenhaCarro(float R, float G, float B);
 void DesenhaEstrada();
 void DesenhaSeg(GLfloat *cor, float x1, float z1, float y1, float w1, float x2, float z2, float y2, float w2);
 void IdleFunc();
