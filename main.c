@@ -51,11 +51,11 @@ void TimerFunc(int valor){
     //Inércia nas curvas
 	if(Pontos.ponto[pos].curve > 0 ){ //Curva para a direita.
 		if(carPosX >= -(larPista/2+25)) 
-            carPosX = carPosX-1*speed/15;	
+            carPosX = carPosX-0.9*speed/20;	
 	}
 	if(Pontos.ponto[pos].curve < 0 ){ //Curva para a esquerda.
 		if(carPosX <= larPista/2+20) 
-            carPosX = carPosX+1*speed/15;
+            carPosX = carPosX+0.9*speed/20;
 	}	
 
     InitScreen();
@@ -114,24 +114,24 @@ void Desenha(){
 
     // Verifica Teclas:
     if(botoes[0]){
-        pos += speed;
-        posBot += speed;//pos % 2 ? posBot + 1: posBot;
+        pos += (0.1 * speed);
+        posBot = posBot + 0.05   *speed;
         printf("valor: %.2f - pos: %d\n", Pontos.ponto[posBot].x *-0.2, pos);
     }
     if(botoes[1]){
-        pos -= speed;
-        posBot -= speed;//= pos % 2 ? posBot + 1: posBot;
+        pos -= (0.1 * speed);
+        posBot = posBot + 0.15 * speed;
          printf("valor: %.2f - pos: %d\n",Pontos.ponto[posBot].x *-0.2, pos);
         }
     if(botoes[2]){
-        carPosX = carPosX >=  -(larPista/2+30)? carPosX - 1.3: carPosX;
+        carPosX = carPosX >=  -(larPista/2+30)? carPosX - 1.5 * speed/(15+(volta*2)): carPosX;
         viraCarro = viraCarro > 25 ? viraCarro : viraCarro + 0.8;
-        if(anima) pos -= abs(carPosX) * 0.02;
+        if(anima) speed = speed > 1 ? speed + abs(carPosX) * 0.0001 * speed/(15+(volta*2)) : 1;
     }
     if(botoes[3]){
-        carPosX = carPosX <=  larPista/2+30? carPosX + 1.3: carPosX;
+        carPosX = carPosX <=  larPista/2+30? carPosX + 1.5 * speed/(15+(volta*2)): carPosX;
         viraCarro = viraCarro <-25 ? viraCarro : viraCarro - 0.8;
-        if(anima) pos -= abs(carPosX) * 0.02;
+        if(anima) speed = speed > 1 ? speed + abs(carPosX) * 0.0001 * speed/(15+(volta*2)): 1;
     }
     while(pos >= tamPista)    pos -= tamPista;
     while(pos < 0)           pos += tamPista;

@@ -176,8 +176,8 @@ void DesenhaBots(GLfloat *cor){
         glPushMatrix();     // BOT
             glTranslatef(Pontos.ponto[posBot].x, 0,Pontos.ponto[posBot].z+pos-(Pontos.ponto[posBot].z+pos > 0 ? tamPista : 0));
             glTranslatef(0,0,-5);
-            glRotatef(-Pontos.ponto[posBot+100].curve * 10000, 0, 1, 0);
-            glRotatef(Pontos.ponto[posBot+100].curve * 2000, 0, 0, 1);
+            glRotatef(-Pontos.ponto[posBot+50].curve * 10000, 0, 1, 0);
+            glRotatef(Pontos.ponto[posBot+50].curve * 2000, 0, 0, 1);
             glTranslatef(0,0, 5);
             glScalef(s_car, s_car, s_car);
             DesenhaCarro(cor);
