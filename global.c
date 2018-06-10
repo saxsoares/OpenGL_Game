@@ -17,6 +17,7 @@ GLdouble x_0=0,     y_0=40.0,   z_0= -100,
 
 // Game
 GLboolean anima = false;
+GLint contaCor = 0, voltaAnt = 0;
 
 
 // Pista

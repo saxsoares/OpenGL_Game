@@ -34,14 +34,16 @@ GLint sw, sh, winPosX, winPosY;
 GLfloat w_width, w_height;
 GLfloat mouseX, mouseY, mouseClickX, mouseClickY;
 
-extern GLboolean anima;
-extern GLint volta;
+
 //Camera
 extern GLdouble theta, aspect, d_near, d_far;
 extern GLdouble x_0,    y_0,    z_0,
                 x_ref,  y_ref,  z_ref,
                 V_x,    V_y,   V_z,
                 xCam,   yCam,   zCam;
+// Game
+extern GLboolean anima;
+extern GLint volta, contaCor, voltaAnt;
 
 // Pista
 Array Pontos;

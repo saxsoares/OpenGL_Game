@@ -37,14 +37,26 @@ void TimerFunc(int valor){
     while(posBot < 0)         posBot += tamPista;
     
     //Controle do céu
-    if(!(volta%4))
-        glClearColor(.0f, .0f, (float)pos/tamPista, .0f);
-    else if(!volta%3)
-        glClearColor(.0f, .0f, 1, .0f);
-    else if(!volta%2)
-        glClearColor(.0f, .0f, 1 - ((float)pos/tamPista), .0f);
-    else
-        glClearColor(.0f, .0f, 1, .0f);
+    if(volta != voltaAnt){
+        voltaAnt = volta;
+        contaCor = (contaCor+1) % 4;
+    }
+    if(contaCor == 3){
+        printf("volta4: %.d - %.3f\n", volta, 1.0 - ((float)pos/tamPista));
+        glClearColor(.0f, .0f, 1.0 - ((float)pos/(float)tamPista), .0f);
+    }
+    else if(contaCor == 2){
+        printf("volta3: %.d - %.3f\n", volta, 1.0);
+        glClearColor(.0f, .0f, 1.0, .0f);
+    }
+    else if(contaCor == 1){
+        printf("volta2: %.d - %.3f\n", volta, ((float)pos/(float)tamPista));
+        glClearColor(.0f, .0f, ((float)pos/(float)tamPista), .0f);
+    }
+    else{
+        printf("volta1: %.d - %.3f\n", volta, 0.0);
+        glClearColor(.0f, .0f, 0, .0f);
+    }
     //Controle de velocidade
 	// if((int)pos%tamPista == 0) volta++; //Cada volta no mapa tem tamPista posições.
 	if(speed<15+(volta*2)) speed += 0.005;//Aceleracao maxima 35, aumenta em 2 para cada volta.
@@ -63,7 +75,7 @@ void TimerFunc(int valor){
 
     InitScreen();
     if(anima)
-        glutTimerFunc(1, TimerFunc, f);
+        glutTimerFunc(5, TimerFunc, f);
     glutPostRedisplay();
 }
 void DesenhaPista(){
