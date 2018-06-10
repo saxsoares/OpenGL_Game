@@ -7,14 +7,19 @@
 #include <GL/glut.h>
 
 #define PI M_PI
+#define false GL_FALSE
+#define true GL_TRUE
 
 typedef struct {
-    GLfloat x, y, z ;
+    GLfloat x, y, z;
+    GLboolean cor ;
+    GLfloat dx;
+    GLboolean bot;
     GLfloat curve;
-}Line_t, *Line ;
+}Ponto_t, *Ponto ;
 
 typedef struct {
-  Line_t *array;
+  Ponto_t *ponto;
   size_t used;
   size_t size;
 } Array;
@@ -28,24 +33,33 @@ extern GLfloat
 GLint sw, sh, winPosX, winPosY;
 GLfloat w_width, w_height;
 GLfloat mouseX, mouseY, mouseClickX, mouseClickY;
-GLint  pistaLenght;
-extern GLfloat fps;
-extern GLfloat carPosX, carPosY, carPosZ;
 
-extern GLint numSeg;
-extern GLfloat angX, angY, angZ;
+extern GLboolean anima;
+extern GLint volta;
+//Camera
 extern GLdouble theta, aspect, d_near, d_far;
 extern GLdouble x_0,    y_0,    z_0,
-         x_ref,  y_ref,  z_ref,
-         V_x,    V_y,   V_z,
-         xCam,   yCam,   zCam;
-extern GLfloat playerX;
+                x_ref,  y_ref,  z_ref,
+                V_x,    V_y,   V_z,
+                xCam,   yCam,   zCam;
 
-GLfloat startPos, pos;
+// Pista
+Array Pontos;
+GLfloat x, dx;
+extern GLint tamPista, larPista;
+
+// Teclas
+extern GLboolean botoes[];
+
+// Player
+GLint pos;
+extern GLfloat s_car, carPosX, viraCarro, speed;
+// Bot
+
 
 int main(int, char**);
 void initArray(Array *a, size_t initialSize);
-void insertArray(Array *a, Line_t element);
+void insertArray(Array *a, Ponto_t element);
 void freeArray(Array *a);
 void Msg(char *string, GLfloat x, GLfloat y);
 void FitWindow(GLsizei w, GLsizei h);
@@ -57,13 +71,13 @@ void UpKeyboard(unsigned char, int, int);
 void SpecialKeys(int, int, int);
 void Timer(int);
 void TimerFunc(int );
-void Reshape(int, int);
+void Reshape(int, int); 
 void Msg(char *, GLfloat , GLfloat );
 void Desenha();
 void DesenhaGrade();
-void DesenhaCarro();
-void DesenhaEstrada();
-void DesenhaSeg(GLfloat *cor, float x1, float z1, float y1, float w1, float x2, float z2, float y2, float w2);
+void DesenhaCarro(GLfloat *);
+void DesenhaPista();
+void DesenhaSeg(GLfloat *cor, float x1, float z1, float y1, float x2, float z2, float y2, float w2);
 void IdleFunc();
 
 #endif

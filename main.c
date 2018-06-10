@@ -1,179 +1,160 @@
-
 #include "global.h"
-#define false GL_FALSE
-#define true GL_TRUE
 
-GLfloat abobora[]={.99,.06,.75},     amarelo[]={1,1,0},     azul[]={0,0,1},      azulCeu[]={.53,.81,.98}, azulEsc[]={0,0,.55},
-        azulMarinho[]={.07,.04,.56}, azulCiano[]={0,1,1},   branco[]={1,1,1},    cinza[]={.5,.5,.5},      cinzaClaro[]={.7,.7,.7},
-        cinzaEsc[]={.66,.66,.66},    furchsia[]={1,0,1},    jambo[]={1,.27,0},  fuligem[]={.24,.17,.12}, laranja[]={1,.65,0},
-        cinzaFosco[]={.41,.41,.41},  rosa[]={1,.75,.8},   rosaBri[]={1,0,.5}, roxo[]={.5,0,.5},         verde[]={0,1,0},
-        verdeGrama[]={.49,.99,0},     verdeEsc[]={0,.39,0}, preto[]={0,0,0},     marrom[]={.65,.16,.16},
-        roadColorA[]={.42,.42,.42},  roadColorB[]={.41,.41,.41}, grassColorA[]={.06,.78,.06}, grassColorB[]={0.0,.6,0.0};
+// Player
+GLfloat s_car = 1;
 
-GLfloat angX = 0, angY = 0, angZ = 0, passoCam = 1, fps = 60;
-GLdouble theta=90,  aspect=1,   d_near=1, d_far=1800;
-GLdouble x_0=0,     y_0=42.0,   z_0=-118,
-         x_ref=0,   y_ref=0,    z_ref=-210,
-         V_x=0,     V_y=1,      V_z = 0,
-         xCam = 0,  yCam= 0,    zCam=0;
+// Bot
+GLint posBot = 300;
 
-Array Linhas;
-GLint N, TimeFlag = 0, volta = 0;
-GLfloat segL = 15, pistaWidht = 70, x = 0, dx = 0;;
-GLfloat playerX = 0, carPosX = 0, carPosY = 0, carPosZ = -194, s_car = 1, viraCarro = 0.1, speed = 1;
-GLboolean anima = GL_FALSE;
-GLboolean botoes[] = {false, false, false, false};
+void InitScreen(){
+    w_width = glutGet(GLUT_WINDOW_WIDTH);
+    w_height = glutGet(GLUT_WINDOW_HEIGHT);
 
-void Keyboard (unsigned char key, int x, int y){
-    switch (key){
-        case 27:            // ESC
-            exit (0);
-            break;
-        case 'w':
-        case 'W':  botoes[0] = true;  break;
-        case 's':
-        case 'S':  botoes[1] = true;  break;
-        case 'a':
-        case 'A':  botoes[2] = true;  break;
-        case 'd':
-        case 'D':  botoes[3] = true;  break;
+    glMatrixMode(GL_PROJECTION); //define que a matrix é a de projeção
+    glLoadIdentity(); //carrega a matrix de identidade
+    gluPerspective(theta, aspect, d_near, d_far);
 
-        default: break;
-    }
+    glPushMatrix();
+        glMatrixMode(GL_MODELVIEW); //define que a matrix é a model view
+        glLoadIdentity(); //carrega a matrix de identidade
+        gluLookAt(x_0,   y_0,   z_0,
+                  x_ref, y_ref, z_ref,
+                  V_x,   V_y,   V_z);
+    glPopMatrix();
+}
+void TimerFunc(int valor){
+    int f = valor;
+    pos += speed ;
+    Pontos.ponto[posBot].bot = false;
+    posBot = pos % 2 ? posBot + 1: posBot;
+    
+    while(pos >= tamPista)    pos -= tamPista;
+    while(pos < 0)            pos += tamPista;
+    while(posBot >= tamPista) posBot -= tamPista;
+    while(posBot < 0)         posBot += tamPista;
+    
+    //Controle do céu
+    if(volta%4 == 3 && (int)pos%tamPista!=0)
+        glClearColor(.0f, .0f, (float)pos/tamPista, .0f);
+    else if (volta%4 == 1 && (int)pos%tamPista!=0)
+        glClearColor(.0f, .0f, 1-((float)pos/tamPista), .0f);
 
-    while(pos >= pistaLenght) pos -= pistaLenght;
-    while(pos < 0) pos += pistaLenght;
-    startPos = pos/segL;
+    //Controle de velocidade
+	if((int)pos%tamPista == 0) volta++; //Cada volta no mapa tem tamPista posições.
+	if(speed<15+(volta*2)) speed += 0.025;//Aceleracao maxima 35, aumenta em 2 para cada volta.
+	if(speed<10) speed += 0.005;			//Aceleracao 0.2 quando abaixo de speed 20.
+	// if(speed<5) speed += 0.025;			//Aceleracao 0.3 quando abaixo de speed 05.
+    
+    //Inércia nas curvas
+	if(Pontos.ponto[pos].curve > 0 ){ //Curva para a direita.
+		if(carPosX >= -(larPista/2+25)) 
+            carPosX = carPosX-1*speed/15;	
+	}
+	if(Pontos.ponto[pos].curve < 0 ){ //Curva para a esquerda.
+		if(carPosX <= larPista/2+20) 
+            carPosX = carPosX+1*speed/15;
+	}	
 
     InitScreen();
-}
-void UpKeyboard (unsigned char key, int x, int y){
-    switch (key){
-        case 'w':
-        case 'W':  botoes[0] = false;  break;
-        case 's':
-        case 'S':  botoes[1] = false;  break;
-        case 'a':
-        case 'A':  botoes[2] = false;  break;
-        case 'd':
-        case 'D':  botoes[3] = false;  break;
-
-    }
-}
-
-void SpecialKeys (int key, int x, int y){
-    switch(key){
-        case GLUT_KEY_PAGE_UP:
-            anima = GL_TRUE;
-            TimeFlag++;
-            TimerFunc(TimeFlag-1);
-            break;
-        case GLUT_KEY_PAGE_DOWN:
-            TimeFlag--;
-            if(!TimeFlag) anima = false;
-            break;
-        default:
-            break;
-    }
-}
-
-void TimerFunc(int value){
-    int f = value;
-    pos += 2;
-    while(pos >= pistaLenght) pos -= pistaLenght;
-    while(pos < 0) pos += pistaLenght;
-    startPos = pos/segL;
-
-
-    if(anima && f < TimeFlag)
+    if(anima)
         glutTimerFunc(1, TimerFunc, f);
     glutPostRedisplay();
 }
-
-void DesenhaEstrada(){
-    float *road, *grass, *rumble;
-    Line_t *l, *p;
-    x = 0;
+void DesenhaPista(){
+    Ponto_t *p2, *p1;
+    int n;
+    x= 0;
     dx = 0;
-    Msg("Fernasdnasdasd", 0, 0);
-    // Draw road /
-    for(int n = startPos; n < startPos+600; n++){
-        l = &(Linhas.array[n%N]);
+
+    Pontos.ponto[posBot].bot = true;
+    for(n = pos; n < pos+2000; n++){
+        
+        p1 = &(Pontos.ponto[(n-1)%tamPista]);
+        p2 = &(Pontos.ponto[n%tamPista]);
         x += dx;
-        dx += l->curve;
-        l->x = x;
+        dx += p2->curve;
+        p2->x = x;
+        DesenhaSeg(p1->cor? grassColorA : grassColorB,  
+                    p1->x, p1->y-2, p1->z+pos-(n-1>=tamPista?tamPista:0), 
+                    p2->x, p2->y-2, p2->z+pos-(n  >=tamPista?tamPista:0), larPista*2);
+        DesenhaSeg(p1->cor? preto : branco,
+                    p1->x, p1->y-1, p1->z+pos-(n-1>=tamPista?tamPista:0), 
+                    p2->x, p2->y-1, p2->z+pos-(n  >=tamPista?tamPista:0), larPista*1.2);
+        DesenhaSeg(p1->cor? roadColorA: roadColorB,   
+                    p1->x, p1->y,   p1->z+pos-(n-1>=tamPista?tamPista:0), 
+                    p2->x, p2->y,   p2->z+pos-(n  >=tamPista?tamPista:0), larPista);
 
-        road   = (n/11)%2 ? roadColorA  : roadColorB;
-        grass  = (n/11)%2 ? grassColorA : grassColorB;
-        rumble = (n/11)%2 ? preto : branco;
-
-        p = &(Linhas.array[(n-1)%N]);
-
-        DesenhaSeg(grass,   p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), -2,  2000,
-                            l->x, l->z+pos-(n>=N?pistaLenght+segL:0),   -2, 2000);
-
-        DesenhaSeg(rumble, p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), -1, pistaWidht *1.2,
-                           l->x, l->z+pos-(n>=N?pistaLenght+segL:0),   -1, pistaWidht *1.2);
-
-        DesenhaSeg(road,   p->x, p->z+pos-(n-1>=N?pistaLenght+segL:0), 0, pistaWidht,
-                           l->x, l->z+pos-(n>=N?pistaLenght+segL:0),   0,pistaWidht);
-
-        }
-
-         glPushMatrix();
-            glTranslatef(0+dx, 0, - 450+0.1*pos);
-            glScalef(s_car, s_car, s_car);
+        if(p1->bot){
+        glPushMatrix();     // BOT
+            glTranslatef(p1->x, 0,  p1->z+pos-(n-1>=tamPista?tamPista:0));
             glTranslatef(0,0,-5);
-            glRotatef(2*Linhas.array[(int)startPos].curve, 0, 1, 0);
-            glRotatef(-20*Linhas.array[(int)startPos].curve, 0, 0, 1);
+            glRotatef(-0.5*Pontos.ponto[posBot].x, 0, 1, 0);
+            // glRotatef(1*p1->x, 0, 0, 1);
             glTranslatef(0,0, 5);
-            DesenhaCarro();
+            glScalef(s_car, s_car, s_car);
+            DesenhaCarro(azul);
         glPopMatrix();
-
+        }   
+    }
 }
 
 void Desenha(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
+    
+    // Pista
     glPushMatrix();
-        DesenhaEstrada();
-    glPopMatrix();
-    glPushMatrix();
-        glTranslatef(carPosX, carPosY, carPosZ);
-        glScalef(s_car, s_car, s_car);
-        glTranslatef(0,0,-5);
-        glRotatef(viraCarro+2*Linhas.array[(int)startPos].curve, 0, 1, 0);
-        glRotatef(-0.5*viraCarro-20*Linhas.array[(int)startPos].curve, 0, 0, 1);
-        glTranslatef(0,0, 5);
-        DesenhaCarro();
+        DesenhaPista();
     glPopMatrix();
 
+    // Player
+    glPushMatrix();
+        glTranslatef(carPosX, 0,  -180);
+        glTranslatef(0,0,-5);
+        glRotatef(viraCarro - Pontos.ponto[pos].curve * 4000, 0, 1, 0);
+        glRotatef(-0.5*viraCarro + Pontos.ponto[pos].curve * 2000, 0, 0, 1);
+        glTranslatef(0,0, 5);
+        glScalef(s_car, s_car, s_car);
+        DesenhaCarro(vermelho);
+    glPopMatrix();
+
+    // Verifica Teclas:
     if(botoes[0]){
-        pos += 2;
+        pos += speed;
+        Pontos.ponto[posBot].bot = false;
+        posBot += speed;//pos % 2 ? posBot + 1: posBot;
     }
     if(botoes[1]){
-        pos -= 2;
-    }
+        pos -= speed;
+        Pontos.ponto[posBot].bot = false;
+        posBot -= speed;//= pos % 2 ? posBot + 1: posBot;
+        }
     if(botoes[2]){
-        carPosX = carPosX >=  -pistaWidht/2-30? carPosX - 1.3: carPosX;
+        carPosX = carPosX >=  -(larPista/2+30)? carPosX - 1.3: carPosX;
         viraCarro = viraCarro > 25 ? viraCarro : viraCarro + 0.8;
         if(anima) pos -= abs(carPosX) * 0.05;
     }
     if(botoes[3]){
-        carPosX = carPosX <=  pistaWidht/2+30? carPosX + 1.3: carPosX;
+        carPosX = carPosX <=  larPista/2+30? carPosX + 1.3: carPosX;
         viraCarro = viraCarro <-25 ? viraCarro : viraCarro - 0.8;
         if(anima) pos -= abs(carPosX) * 0.05;
     }
+    while(pos >= tamPista)    pos -= tamPista;
+    while(pos < 0)           pos += tamPista;
+    while(posBot >= tamPista) posBot -= tamPista;
+    while(posBot < 0)        posBot += tamPista;
 
     if(!botoes[2] && !botoes[3]){
         if(viraCarro > 0){
-            viraCarro = viraCarro * 0.95;
+            viraCarro = viraCarro * 0.92;
         }else if (viraCarro < 0){
-            viraCarro = viraCarro * 0.95;
+            viraCarro = viraCarro * 0.92;
         }
     }
+
     glFlush();
     glutSwapBuffers();
 }
+
 int main(int argc, char *argv[]){
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -183,24 +164,30 @@ int main(int argc, char *argv[]){
     glutInitWindowPosition(winPosX, winPosY);
     glutInitWindowSize(sh, sh);
     glutSetKeyRepeat(1);
+    GLint c = 0;
+    GLboolean flagCor = false;
+    x = 0; dx = 0;
+    initArray(&Pontos, tamPista+2);
+    for(int i = 0; i < tamPista; i++){
+        Ponto_t ponto;
+        ponto.x = 0;
+        ponto.y = 0;
+        ponto.z = -i ;
+        ponto.curve = 0;
 
-    initArray(&Linhas, 802);
-    for(int i = 0; i < 1200; i++){
-        Line_t line;
-        line.x = 0;
-        line.y = 0;
-        line.z = -i * segL;
-        line.curve = 0;
-        if(i > 100 && i < 200) line.curve = 0.1;
-        if(i > 300 && i < 500) line.curve = -0.1;
-        if(i > 500 && i < 800) line.curve = 0.1;
-        if(i > 900 && i < 1200) line.curve = -0.1;
+        //Cor
+        if (c == 50){
+            c = 0;
+            flagCor = flagCor? false : true;
+        }else c++;
+        ponto.cor =   flagCor;
 
-        insertArray(&Linhas, line);
+        // Curva
+        if( i > 100 && i < 1200) ponto.curve = 0.001;
+        if( i > 1200 && i < 2300) ponto.curve = -0.001;
+
+        insertArray(&Pontos, ponto);
     }
-    N = Linhas.used;
-    pos = 0;
-    pistaLenght = (N * segL);
 
     glutCreateWindow("CG TRAB-FINAL - ENDURO");FitWindow(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
         glutReshapeFunc(Reshape);

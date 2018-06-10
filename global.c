@@ -1,21 +1,51 @@
 #include "global.h"
 
+GLfloat abobora[]={.99,.06,.75},     amarelo[]={1,1,0},     azul[]={0,0,1},      azulCeu[]={.53,.81,.98}, azulEsc[]={0,0,.55},
+        azulMarinho[]={.07,.04,.56}, azulCiano[]={0,1,1},   branco[]={1,1,1},    cinza[]={.5,.5,.5},      cinzaClaro[]={.7,.7,.7},
+        cinzaEsc[]={.66,.66,.66},    furchsia[]={1,0,1},    jambo[]={1,.27,0},  fuligem[]={.24,.17,.12}, laranja[]={1,.65,0},
+        cinzaFosco[]={.41,.41,.41},  rosa[]={1,.75,.8},   rosaBri[]={1,0,.5}, roxo[]={.5,0,.5},         verde[]={0,1,0},
+        verdeGrama[]={.49,.99,0},     verdeEsc[]={0,.39,0}, preto[]={0,0,0},     marrom[]={.65,.16,.16},vermelho[]={1,0,0},
+        roadColorA[]={.42,.42,.42},  roadColorB[]={.41,.41,.41}, grassColorA[]={.06,.78,.06}, grassColorB[]={0.0,.6,0.0};
+
+// Camera
+GLboolean botoes[] = {false, false, false, false};
+GLdouble theta=90,  aspect=1,   d_near=1, d_far=1800;
+GLdouble x_0=0,     y_0=40.0,   z_0= -100,
+         x_ref=0,   y_ref=0,    z_ref=-200,
+         V_x=0,     V_y=1,      V_z = 0,
+         xCam = 0,  yCam= 0,    zCam=0;
+
+// Game
+GLboolean anima = false;
+
+
+// Pista
+GLint tamPista = 4000, larPista = 80, volta = 0;
+
+
+// Jogador
+GLint pos = 0;
+GLfloat carPosX = 0, viraCarro = 0, speed = 1;
+
+// Bot
+
+
 void initArray(Array *a, size_t initialSize) {
-  a->array = (Line_t *)calloc(initialSize , sizeof(Line_t));
+  a->ponto = (Ponto_t *)calloc(initialSize , sizeof(Ponto_t));
   a->used = 0;
   a->size = initialSize;
 }
-void insertArray(Array *a, Line_t element) {
+void insertArray(Array *a, Ponto_t element) {
   if (a->used == a->size) {
     a->size *= 2;
-    a->array = (Line_t *)realloc(a->array, a->size * sizeof(Line_t));
+    a->ponto = (Ponto_t *)realloc(a->ponto, a->size * sizeof(Ponto_t));
   }
-  a->array[a->used++] = element;
+  a->ponto[a->used++] = element;
 }
 
 void freeArray(Array *a) {
-  free(a->array);
-  a->array = NULL;
+  free(a->ponto);
+  a->ponto = NULL;
   a->used = a->size = 0;
 }
 
@@ -47,27 +77,7 @@ void Reshape(int w, int h){
     InitScreen();
 }
 
-void InitScreen(){
-    w_width = glutGet(GLUT_WINDOW_WIDTH);
-    w_height = glutGet(GLUT_WINDOW_HEIGHT);
 
-    glMatrixMode(GL_PROJECTION); //define que a matrix é a de projeção
-    glLoadIdentity(); //carrega a matrix de identidade
-    gluPerspective(theta, aspect, d_near, d_far);
-
-    glPushMatrix();
-        glRotatef(angX, 1, 0, 0);
-        glRotatef(angY, 0, 1, 0);
-        glRotatef(angZ, 0, 0, 1);
-
-        glMatrixMode(GL_MODELVIEW); //define que a matrix é a model view
-        glLoadIdentity(); //carrega a matrix de identidade
-
-        gluLookAt(x_0, y_0, z_0,
-                  x_ref, y_ref, z_ref,
-                  V_x, V_y, V_z);
-    glPopMatrix();
-}
 
 void MovimentaMouse(int x, int y){
     y = w_height - y;
@@ -88,12 +98,74 @@ void MouseFunc(int botao, int estado, int x, int y){
             break ;
     }
 }
-void DesenhaSeg(GLfloat *cor, float x1, float z1, float y1, float w1, float x2, float z2, float y2, float w2){
+void DesenhaSeg(GLfloat *cor, float x1, float y1, float z1, 
+                              float x2, float y2, float z2, float w){
     glColor3fv(cor);
     glBegin(GL_QUADS);
-        glVertex3f(x1-w1,y1,z1);
-        glVertex3f(x2-w2,y2,z2);
-        glVertex3f(x2+w2,y2,z2);
-        glVertex3f(x1+w1,y1,z1);
+        glVertex3f(x1-w,y1,z1);
+        glVertex3f(x2-w,y2,z2);
+        glVertex3f(x2+w,y2,z2);
+        glVertex3f(x1+w,y1,z1);
     glEnd();
+}
+
+void Keyboard (unsigned char key, int x, int y){
+    // printf("key_: %d\n", key);
+    int timerID = 0;
+    switch (key){
+        case 27:            // ESC
+            exit (0);
+            break;
+        case 13:            // ENTER
+            
+            break;
+        case 32:            // SPACE
+            anima = anima ? false : true;
+            TimerFunc(timerID);
+            break;
+        case 'w':
+        case 'W':  botoes[0] = true;  break;
+        case 's':
+        case 'S':  botoes[1] = true;  break;
+        case 'a':
+        case 'A':  botoes[2] = true;  break;
+        case 'd':
+        case 'D':  botoes[3] = true;  break;
+
+        default: break;
+    }
+     InitScreen();
+}
+
+void UpKeyboard (unsigned char key, int x, int y){
+    switch (key){
+        case 'w':
+        case 'W':  botoes[0] = false;  break;
+        case 's':
+        case 'S':  botoes[1] = false;  break;
+        case 'a':
+        case 'A':  botoes[2] = false;  break;
+        case 'd':
+        case 'D':  botoes[3] = false;  break;
+    }
+}
+
+void SpecialKeys (int key, int x, int y){
+    // printf("key: %d\n", key);
+    switch(key){
+        case GLUT_KEY_RIGHT:
+            
+            break;
+        case GLUT_KEY_LEFT:
+            
+            break;
+        case GLUT_KEY_UP:
+            
+            break;
+        case GLUT_KEY_DOWN:
+            
+            break;
+        default:
+            break;
+    }
 }
