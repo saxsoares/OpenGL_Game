@@ -56,7 +56,8 @@ GLint pos;
 extern GLfloat s_car, carPosX, viraCarro, speed;
 
 // Bot
-
+extern GLfloat *corBot[];
+extern GLint posBot;
 
 int main(int, char**);
 void initArray(Array *a, size_t initialSize);
@@ -77,7 +78,9 @@ void Msg(char *, GLfloat , GLfloat );
 void Desenha();
 void DesenhaGrade();
 void DesenhaCarro(GLfloat *);
+void DesenhaBots(GLfloat *);
 void DesenhaPista();
+
 void DesenhaSeg(GLfloat *cor, float x1, float z1, float y1, float x2, float z2, float y2, float w2);
 void IdleFunc();
 

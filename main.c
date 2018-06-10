@@ -4,8 +4,7 @@
 GLfloat s_car = 1;
 
 // Bot
-GLint posBot = 300;
-GLfloat dxbot = 0;
+
 
 void InitScreen(){
     w_width = glutGet(GLUT_WINDOW_WIDTH);
@@ -69,8 +68,8 @@ void DesenhaPista(){
     int n;
     x= 0;
     dx = 0;
-    Pontos.ponto[posBot].bot = true;
-    for(n = pos; n < pos+2000; n++){
+    // Pontos.ponto[posBot].bot = true;
+    for(n = pos; n < pos+2500; n++){
         
         p1 = &(Pontos.ponto[(n-1)%tamPista]);
         p2 = &(Pontos.ponto[n%tamPista]);
@@ -80,7 +79,7 @@ void DesenhaPista(){
        
         DesenhaSeg(p1->cor? grassColorA : grassColorB,  
                     p1->x, p1->y-2, p1->z+pos-(n-1>=tamPista?tamPista:0), 
-                    p2->x, p2->y-2, p2->z+pos-(n  >=tamPista?tamPista:0), larPista*2);
+                    p2->x, p2->y-2, p2->z+pos-(n  >=tamPista?tamPista:0), larPista*10);
         DesenhaSeg(p1->cor? preto : branco,
                     p1->x, p1->y-1, p1->z+pos-(n-1>=tamPista?tamPista:0), 
                     p2->x, p2->y-1, p2->z+pos-(n  >=tamPista?tamPista:0), larPista*1.2);
@@ -111,16 +110,7 @@ void Desenha(){
         DesenhaCarro(vermelho);
     glPopMatrix();
 
-    // Bot
-    glPushMatrix();     // BOT
-        glTranslatef(Pontos.ponto[posBot].x, 0,Pontos.ponto[posBot].z+pos-(Pontos.ponto[posBot].z+pos > 0 ? tamPista : 0));
-        glTranslatef(0,0,-5);
-        glRotatef(0, 0, 1, 0);
-        glRotatef(Pontos.ponto[posBot].curve * 2000, 0, 0, 1);
-        glTranslatef(0,0, 5);
-        glScalef(s_car, s_car, s_car);
-        DesenhaCarro(amarelo);
-    glPopMatrix();   
+    DesenhaBots(corBot[volta%4]);
 
     // Verifica Teclas:
     if(botoes[0]){
@@ -190,6 +180,10 @@ int main(int argc, char *argv[]){
         // Curva
         if( i > 100 && i < 1200) ponto.curve = 0.001;
         if( i > 1200 && i < 2300) ponto.curve = -0.001;
+        // if( i > 3000 && i < 4200) ponto.curve = 0.001;
+        // if( i > 4800 && i < 7300) ponto.curve = -0.001;
+        // if( i > 10000 && i < 12000) ponto.curve = 0.001;
+        // if( i > 15000 && i < 17000) ponto.curve = -0.001;
 
         insertArray(&Pontos, ponto);
     }
