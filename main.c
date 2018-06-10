@@ -28,22 +28,25 @@ void TimerFunc(int valor){
     Pontos.ponto[posBot].bot = false;
     posBot = pos % 2 ? posBot + 1: posBot;
     
-    while(pos >= tamPista)    pos -= tamPista;
+    while(pos >= tamPista){
+         pos -= tamPista;
+         volta++;
+    }
     while(pos < 0)            pos += tamPista;
     while(posBot >= tamPista) posBot -= tamPista;
     while(posBot < 0)         posBot += tamPista;
     
     //Controle do céu
-    if(volta%4 == 3 && (int)pos%tamPista!=0)
+    if(!(volta%2))
         glClearColor(.0f, .0f, (float)pos/tamPista, .0f);
-    else if (volta%4 == 1 && (int)pos%tamPista!=0)
-        glClearColor(.0f, .0f, 1-((float)pos/tamPista), .0f);
+    else
+        glClearColor(.0f, .0f, 1 - ((float)pos/tamPista), .0f);
 
     //Controle de velocidade
-	if((int)pos%tamPista == 0) volta++; //Cada volta no mapa tem tamPista posições.
-	if(speed<15+(volta*2)) speed += 0.025;//Aceleracao maxima 35, aumenta em 2 para cada volta.
+	// if((int)pos%tamPista == 0) volta++; //Cada volta no mapa tem tamPista posições.
+	if(speed<15+(volta*2)) speed += 0.005;//Aceleracao maxima 35, aumenta em 2 para cada volta.
 	if(speed<10) speed += 0.005;			//Aceleracao 0.2 quando abaixo de speed 20.
-	// if(speed<5) speed += 0.025;			//Aceleracao 0.3 quando abaixo de speed 05.
+	if(speed<5) speed += 0.005;			//Aceleracao 0.3 quando abaixo de speed 05.
     
     //Inércia nas curvas
 	if(Pontos.ponto[pos].curve > 0 ){ //Curva para a direita.
@@ -131,12 +134,12 @@ void Desenha(){
     if(botoes[2]){
         carPosX = carPosX >=  -(larPista/2+30)? carPosX - 1.3: carPosX;
         viraCarro = viraCarro > 25 ? viraCarro : viraCarro + 0.8;
-        if(anima) pos -= abs(carPosX) * 0.05;
+        if(anima) pos -= abs(carPosX) * 0.02;
     }
     if(botoes[3]){
         carPosX = carPosX <=  larPista/2+30? carPosX + 1.3: carPosX;
         viraCarro = viraCarro <-25 ? viraCarro : viraCarro - 0.8;
-        if(anima) pos -= abs(carPosX) * 0.05;
+        if(anima) pos -= abs(carPosX) * 0.02;
     }
     while(pos >= tamPista)    pos -= tamPista;
     while(pos < 0)           pos += tamPista;
