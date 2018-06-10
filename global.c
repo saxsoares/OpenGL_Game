@@ -20,7 +20,7 @@ GLboolean anima = false;
 
 
 // Pista
-GLint tamPista = 4000, larPista = 80, volta = 0;
+GLint tamPista = 10000, larPista = 80, volta = 0;
 
 
 // Jogador
@@ -28,8 +28,9 @@ GLint pos = 0;
 GLfloat carPosX = 0, viraCarro = 0, speed = 1;
 
 // Bot
-GLint posBot = 300;
+GLint posBot = 900;
 GLfloat *corBot[] = {amarelo, verde, azul, rosa};
+GLint dxBot, contador;
 
 void initArray(Array *a, size_t initialSize) {
   a->ponto = (Ponto_t *)calloc(initialSize , sizeof(Ponto_t));
@@ -172,14 +173,18 @@ void SpecialKeys (int key, int x, int y){
     }
 }
 
-void DesenhaBots(GLfloat *cor){
-        glPushMatrix();     // BOT
-            glTranslatef(Pontos.ponto[posBot].x, 0,Pontos.ponto[posBot].z+pos-(Pontos.ponto[posBot].z+pos > 0 ? tamPista : 0));
-            glTranslatef(0,0,-5);
-            glRotatef(-Pontos.ponto[posBot+50].curve * 10000, 0, 1, 0);
-            glRotatef(Pontos.ponto[posBot+50].curve * 2000, 0, 0, 1);
-            glTranslatef(0,0, 5);
-            glScalef(s_car, s_car, s_car);
-            DesenhaCarro(cor);
-        glPopMatrix();
+void DesenhaBots(GLfloat *cor, GLint dzBot, GLint dx){
+    // Virifica se posBot+dzBot esta dentro do range (0-tamPista)
+    if((posBot + dzBot) > tamPista){
+        dzBot = -(tamPista - dzBot);
+    }
+    glPushMatrix();     // BOT
+        glTranslatef(Pontos.ponto[posBot+dzBot].x + dx, 0,Pontos.ponto[posBot+dzBot].z+pos-(Pontos.ponto[posBot+dzBot].z+pos > 0 ? tamPista : 0));
+        glTranslatef(0,0,-5);
+        glRotatef(-Pontos.ponto[posBot+50].curve * 10000, 0, 1, 0);
+        glRotatef(Pontos.ponto[posBot+50].curve * 2000, 0, 0, 1);
+        glTranslatef(0,0, 5);
+        glScalef(s_car, s_car, s_car);
+        DesenhaCarro(cor);
+    glPopMatrix();
 }

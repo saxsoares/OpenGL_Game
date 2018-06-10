@@ -51,11 +51,11 @@ void TimerFunc(int valor){
     //Inércia nas curvas
 	if(Pontos.ponto[pos].curve > 0 ){ //Curva para a direita.
 		if(carPosX >= -(larPista/2+25)) 
-            carPosX = carPosX-1*speed/(15+(volta*2));	
+            carPosX = carPosX-1.3*speed/(15+(volta*2));	
 	}
 	if(Pontos.ponto[pos].curve < 0 ){ //Curva para a esquerda.
 		if(carPosX <= larPista/2+25) 
-            carPosX = carPosX+1*speed/(15+(volta*2));
+            carPosX = carPosX+1.3*speed/(15+(volta*2));
 	}	
 
     InitScreen();
@@ -105,14 +105,32 @@ void Desenha(){
         glTranslatef(0,0,-5);
         glRotatef(viraCarro - Pontos.ponto[pos].curve * 2000, 0, 1, 0);
         glRotatef(-0.5*viraCarro + Pontos.ponto[pos].curve * 2000, 0, 0, 1);
-        glRotatef(-0.02*abs(viraCarro) + abs(Pontos.ponto[pos].curve) * 50, 1, 0, 0);
         glTranslatef(0,0, 5);
         glScalef(s_car, s_car, s_car);
         DesenhaCarro(vermelho);
     glPopMatrix();
 
-    DesenhaBots(corBot[volta%4]);
-
+    for(int i = 0; i < tamPista; i+=500){
+        glPushMatrix();
+            if(contador == 0){
+                contador++;
+                dxBot = 0;
+                DesenhaBots(corBot[contador], i, dxBot);
+            }else if(contador == 1){
+                contador++;
+                dxBot = 35;
+                DesenhaBots(corBot[contador], i, dxBot);
+            }else if(contador == 2){
+                contador++;
+                dxBot = 0;
+                DesenhaBots(corBot[contador], i, dxBot);
+            }else if(contador == 3){
+                contador = 0;
+                dxBot = -35;
+                DesenhaBots(corBot[contador], i, dxBot);
+            }
+        glPopMatrix();
+    }
     // Verifica Teclas:
     if(botoes[0]){
         pos += (0.1 * speed);
@@ -178,7 +196,7 @@ int main(int argc, char *argv[]){
         }else c++;
         ponto.cor =   flagCor;
 
-        // Curva
+        // Curvas
         if( i > 700 && i < 1800) ponto.curve = 0.001;
         if( i > 2200 && i < 2900) ponto.curve = -0.001;
         // if( i > 3000 && i < 4200) ponto.curve = 0.001;
