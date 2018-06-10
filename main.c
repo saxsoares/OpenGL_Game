@@ -5,6 +5,7 @@ GLfloat s_car = 1;
 
 // Bot
 GLint posBot = 300;
+GLfloat dxbot = 0;
 
 void InitScreen(){
     w_width = glutGet(GLUT_WINDOW_WIDTH);
@@ -25,8 +26,8 @@ void InitScreen(){
 void TimerFunc(int valor){
     int f = valor;
     pos += speed ;
-    Pontos.ponto[posBot].bot = false;
-    posBot = pos % 2 ? posBot + 1: posBot;
+    // Pontos.ponto[posBot].bot = false;
+    posBot = posBot + 0.8   *speed;
     
     while(pos >= tamPista){
          pos -= tamPista;
@@ -68,7 +69,6 @@ void DesenhaPista(){
     int n;
     x= 0;
     dx = 0;
-
     Pontos.ponto[posBot].bot = true;
     for(n = pos; n < pos+2000; n++){
         
@@ -77,6 +77,7 @@ void DesenhaPista(){
         x += dx;
         dx += p2->curve;
         p2->x = x;
+       
         DesenhaSeg(p1->cor? grassColorA : grassColorB,  
                     p1->x, p1->y-2, p1->z+pos-(n-1>=tamPista?tamPista:0), 
                     p2->x, p2->y-2, p2->z+pos-(n  >=tamPista?tamPista:0), larPista*2);
@@ -87,17 +88,7 @@ void DesenhaPista(){
                     p1->x, p1->y,   p1->z+pos-(n-1>=tamPista?tamPista:0), 
                     p2->x, p2->y,   p2->z+pos-(n  >=tamPista?tamPista:0), larPista);
 
-        if(p1->bot){
-        glPushMatrix();     // BOT
-            glTranslatef(p1->x, 0,  p1->z+pos-(n-1>=tamPista?tamPista:0));
-            glTranslatef(0,0,-5);
-            glRotatef(-0.5*Pontos.ponto[posBot].x, 0, 1, 0);
-            // glRotatef(1*p1->x, 0, 0, 1);
-            glTranslatef(0,0, 5);
-            glScalef(s_car, s_car, s_car);
-            DesenhaCarro(azul);
-        glPopMatrix();
-        }   
+        
     }
 }
 
@@ -120,16 +111,27 @@ void Desenha(){
         DesenhaCarro(vermelho);
     glPopMatrix();
 
+    // Bot
+    glPushMatrix();     // BOT
+        glTranslatef(Pontos.ponto[posBot].x, 0,Pontos.ponto[posBot].z+pos-(Pontos.ponto[posBot].z+pos > 0 ? tamPista : 0));
+        glTranslatef(0,0,-5);
+        glRotatef(0, 0, 1, 0);
+        glRotatef(Pontos.ponto[posBot].curve * 2000, 0, 0, 1);
+        glTranslatef(0,0, 5);
+        glScalef(s_car, s_car, s_car);
+        DesenhaCarro(amarelo);
+    glPopMatrix();   
+
     // Verifica Teclas:
     if(botoes[0]){
         pos += speed;
-        Pontos.ponto[posBot].bot = false;
         posBot += speed;//pos % 2 ? posBot + 1: posBot;
+        printf("valor: %.2f - pos: %d\n", Pontos.ponto[posBot].x *-0.2, pos);
     }
     if(botoes[1]){
         pos -= speed;
-        Pontos.ponto[posBot].bot = false;
         posBot -= speed;//= pos % 2 ? posBot + 1: posBot;
+         printf("valor: %.2f - pos: %d\n",Pontos.ponto[posBot].x *-0.2, pos);
         }
     if(botoes[2]){
         carPosX = carPosX >=  -(larPista/2+30)? carPosX - 1.3: carPosX;

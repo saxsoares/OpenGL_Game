@@ -54,6 +54,7 @@ extern GLboolean botoes[];
 // Player
 GLint pos;
 extern GLfloat s_car, carPosX, viraCarro, speed;
+
 // Bot
 
 

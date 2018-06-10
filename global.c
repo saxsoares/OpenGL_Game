@@ -122,6 +122,7 @@ void Keyboard (unsigned char key, int x, int y){
         case 32:            // SPACE
             anima = anima ? false : true;
             TimerFunc(timerID);
+            speed = 1;
             break;
         case 'w':
         case 'W':  botoes[0] = true;  break;
