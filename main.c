@@ -37,11 +37,14 @@ void TimerFunc(int valor){
     while(posBot < 0)         posBot += tamPista;
     
     //Controle do céu
-    if(!(volta%2))
+    if(!(volta%4))
         glClearColor(.0f, .0f, (float)pos/tamPista, .0f);
-    else
+    else if(!volta%3)
+        glClearColor(.0f, .0f, 1, .0f);
+    else if(!volta%2)
         glClearColor(.0f, .0f, 1 - ((float)pos/tamPista), .0f);
-
+    else
+        glClearColor(.0f, .0f, 1, .0f);
     //Controle de velocidade
 	// if((int)pos%tamPista == 0) volta++; //Cada volta no mapa tem tamPista posições.
 	if(speed<15+(volta*2)) speed += 0.005;//Aceleracao maxima 35, aumenta em 2 para cada volta.
@@ -132,16 +135,16 @@ void Desenha(){
         glPopMatrix();
     }
     // Verifica Teclas:
-    if(botoes[0]){
+    if(botoes[0] && anima){
         pos += (0.1 * speed);
         posBot = posBot + 0.05   *speed;
         printf("valor: %.2f - pos: %d\n", Pontos.ponto[posBot].x *-0.2, pos);
     }
-    if(botoes[1]){
+    if(botoes[1] && anima){
         pos -= (0.1 * speed);
         posBot = posBot + 0.15 * speed;
-         printf("valor: %.2f - pos: %d\n",Pontos.ponto[posBot].x *-0.2, pos);
-        }
+        printf("valor: %.2f - pos: %d\n",Pontos.ponto[posBot].x *-0.2, pos);
+    }
     if(botoes[2]){
         carPosX = carPosX >=  -(larPista/2+30)? carPosX - 1.5 * speed/(15+(volta*2)): carPosX;
         viraCarro = viraCarro > 25 ? viraCarro : viraCarro + 0.8;
