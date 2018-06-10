@@ -51,11 +51,11 @@ void TimerFunc(int valor){
     //Inércia nas curvas
 	if(Pontos.ponto[pos].curve > 0 ){ //Curva para a direita.
 		if(carPosX >= -(larPista/2+25)) 
-            carPosX = carPosX-0.9*speed/20;	
+            carPosX = carPosX-1*speed/(15+(volta*2));	
 	}
 	if(Pontos.ponto[pos].curve < 0 ){ //Curva para a esquerda.
-		if(carPosX <= larPista/2+20) 
-            carPosX = carPosX+0.9*speed/20;
+		if(carPosX <= larPista/2+25) 
+            carPosX = carPosX+1*speed/(15+(volta*2));
 	}	
 
     InitScreen();
@@ -103,8 +103,9 @@ void Desenha(){
     glPushMatrix();
         glTranslatef(carPosX, 0,  -180);
         glTranslatef(0,0,-5);
-        glRotatef(viraCarro - Pontos.ponto[pos].curve * 4000, 0, 1, 0);
+        glRotatef(viraCarro - Pontos.ponto[pos].curve * 2000, 0, 1, 0);
         glRotatef(-0.5*viraCarro + Pontos.ponto[pos].curve * 2000, 0, 0, 1);
+        glRotatef(-0.02*abs(viraCarro) + abs(Pontos.ponto[pos].curve) * 50, 1, 0, 0);
         glTranslatef(0,0, 5);
         glScalef(s_car, s_car, s_car);
         DesenhaCarro(vermelho);
@@ -178,8 +179,8 @@ int main(int argc, char *argv[]){
         ponto.cor =   flagCor;
 
         // Curva
-        if( i > 100 && i < 1200) ponto.curve = 0.001;
-        if( i > 1200 && i < 2300) ponto.curve = -0.001;
+        if( i > 700 && i < 1800) ponto.curve = 0.001;
+        if( i > 2200 && i < 2900) ponto.curve = -0.001;
         // if( i > 3000 && i < 4200) ponto.curve = 0.001;
         // if( i > 4800 && i < 7300) ponto.curve = -0.001;
         // if( i > 10000 && i < 12000) ponto.curve = 0.001;
