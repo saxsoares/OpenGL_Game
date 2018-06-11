@@ -1,7 +1,7 @@
 #include "global.h"
 
 // Player
-GLfloat s_car = 1;
+
 
 // Bot
 
@@ -42,19 +42,15 @@ void TimerFunc(int valor){
         contaCor = (contaCor+1) % 4;
     }
     if(contaCor == 3){
-        printf("volta4: %.d - %.3f\n", volta, 1.0 - ((float)pos/tamPista));
         glClearColor(.0f, .0f, 1.0 - ((float)pos/(float)tamPista), .0f);
     }
     else if(contaCor == 2){
-        printf("volta3: %.d - %.3f\n", volta, 1.0);
         glClearColor(.0f, .0f, 1.0, .0f);
     }
     else if(contaCor == 1){
-        printf("volta2: %.d - %.3f\n", volta, ((float)pos/(float)tamPista));
         glClearColor(.0f, .0f, ((float)pos/(float)tamPista), .0f);
     }
     else{
-        printf("volta1: %.d - %.3f\n", volta, 0.0);
         glClearColor(.0f, .0f, 0, .0f);
     }
     //Controle de velocidade
@@ -125,7 +121,7 @@ void Desenha(){
         DesenhaCarro(vermelho);
     glPopMatrix();
 
-    for(int i = 0; i < tamPista; i+=500){
+    for(int i = 0; i < tamPista; i+=991){
         glPushMatrix();
             if(contador == 0){
                 contador++;
@@ -146,16 +142,18 @@ void Desenha(){
             }
         glPopMatrix();
     }
+    // DesenhaBots(amarelo, 0, 0);
+
     // Verifica Teclas:
     if(botoes[0] && anima){
         pos += (0.1 * speed);
         posBot = posBot + 0.05   *speed;
-        printf("valor: %.2f - pos: %d\n", Pontos.ponto[posBot].x *-0.2, pos);
+        // printf("valor: %.2f - pos: %d\n", Pontos.ponto[posBot].x *-0.2, pos);
     }
     if(botoes[1] && anima){
         pos -= (0.1 * speed);
         posBot = posBot + 0.15 * speed;
-        printf("valor: %.2f - pos: %d\n",Pontos.ponto[posBot].x *-0.2, pos);
+        // printf("valor: %.2f - pos: %d\n",Pontos.ponto[posBot].x *-0.2, pos);
     }
     if(botoes[2]){
         carPosX = carPosX >=  -(larPista/2+30)? carPosX - 1.5 * speed/(15+(volta*2)): carPosX;
@@ -212,10 +210,10 @@ int main(int argc, char *argv[]){
         ponto.cor =   flagCor;
 
         // Curvas
-        if( i > 700 && i < 1800) ponto.curve = 0.001;
-        if( i > 2200 && i < 2900) ponto.curve = -0.001;
-        // if( i > 3000 && i < 4200) ponto.curve = 0.001;
-        // if( i > 4800 && i < 7300) ponto.curve = -0.001;
+        if( i > 1800 && i < 2800) ponto.curve = 0.001;
+        if( i > 3800 && i < 4800) ponto.curve = -0.001;
+        if( i > 5800 && i < 8800) ponto.curve = 0.001;
+        if( i > 12800 && i < 14800) ponto.curve = -0.001;
         // if( i > 10000 && i < 12000) ponto.curve = 0.001;
         // if( i > 15000 && i < 17000) ponto.curve = -0.001;
 

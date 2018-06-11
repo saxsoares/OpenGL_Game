@@ -54,11 +54,12 @@ extern GLint tamPista, larPista;
 extern GLboolean botoes[];
 
 // Player
-GLint pos;
+extern GLfloat s_car;
+extern GLint pos;
 extern GLfloat s_car, carPosX, viraCarro, speed;
 
 // Bot
-extern GLfloat *corBot[];
+extern GLfloat *corBot[], rotBot;
 extern GLint posBot, dxBot, contador;
 
 int main(int, char**);

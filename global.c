@@ -21,15 +21,16 @@ GLint contaCor = 0, voltaAnt = 0;
 
 
 // Pista
-GLint tamPista = 10000, larPista = 80, volta = 0;
+GLint tamPista = 15000, larPista = 80, volta = 0;
 
 
 // Jogador
+GLfloat s_car = 1;
 GLint pos = 0;
 GLfloat carPosX = 0, viraCarro = 0, speed = 1;
 
 // Bot
-GLint posBot = 900;
+GLint posBot = 500;
 GLfloat *corBot[] = {amarelo, verde, azul, rosa};
 GLint dxBot, contador;
 
@@ -164,27 +165,32 @@ void SpecialKeys (int key, int x, int y){
             
             break;
         case GLUT_KEY_UP:
-            
+            rotBot += 0.1;
             break;
         case GLUT_KEY_DOWN:
-            
+            rotBot -= 0.1;
             break;
         default:
             break;
     }
 }
-
+GLfloat rotBot;
 void DesenhaBots(GLfloat *cor, GLint dzBot, GLint dx){
+   
     // Virifica se posBot+dzBot esta dentro do range (0-tamPista)
     if((posBot + dzBot) > tamPista){
         dzBot = -(tamPista - dzBot);
     }
+    GLint da = abs(Pontos.ponto[posBot+dzBot].z - Pontos.ponto[pos].z);
+    GLint db = abs(tamPista - abs(Pontos.ponto[pos].z) + abs(Pontos.ponto[posBot+dzBot].z)); // Se um ja reiniciou a pista e o outro nao
+    GLint distBotfromPlayer = da > db ? db : da;        // Distancia real entre o bot e o player
+    printf("dist: %d - rotBot: %.1f\n", distBotfromPlayer, rotBot);
     glPushMatrix();     // BOT
         glTranslatef(Pontos.ponto[posBot+dzBot].x + dx, 0,Pontos.ponto[posBot+dzBot].z+pos-(Pontos.ponto[posBot+dzBot].z+pos > 0 ? tamPista : 0));
-        glTranslatef(0,0,-5);
-        glRotatef(-Pontos.ponto[posBot+50].curve * 10000, 0, 1, 0);
-        glRotatef(Pontos.ponto[posBot+50].curve * 2000, 0, 0, 1);
-        glTranslatef(0,0, 5);
+        glTranslatef(0,0,-5);       // Calculo de quanto o bot vira nas curvas em função da distancia entre ele e o bot e se o player esta ou nao em curva
+        glRotatef(- ((int)(Pontos.ponto[posBot+dzBot].curve*1000) ? Pontos.ponto[posBot+dzBot].curve : Pontos.ponto[pos].curve) * 1000 * (distBotfromPlayer/35), 0, 1, 0);
+        glRotatef(Pontos.ponto[posBot+dzBot].curve * 2000, 0, 0, 1);
+        glTranslatef(0,0,+5);
         glScalef(s_car, s_car, s_car);
         DesenhaCarro(cor);
     glPopMatrix();
