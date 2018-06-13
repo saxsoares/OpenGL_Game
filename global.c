@@ -181,8 +181,8 @@ void SpecialKeys (int key, int x, int y){
 }
  
 void DesenhaBots(GLfloat *cor, GLint dzBot, GLint dx){
-   
-    // Virifica se posBot+dzBot esta dentro do range (0-tamPista)
+    int i = 0;
+    // Verifica se posBot+dzBot esta dentro do range (0-tamPista)
     if((posBot + dzBot) > tamPista){
         dzBot = -(tamPista - dzBot);
     }
@@ -206,10 +206,8 @@ void DesenhaBots(GLfloat *cor, GLint dzBot, GLint dx){
         )  
         {
             colidiu = true;
-            botoes[2] = botoes[3] = false;
-            speed = speed > 1 ? 0.9 * speed : 1.1; 
-            pos -= (0.12 * speed);
-            posBot = posBot + 0.15 * speed;
+            pos -= 1+(0.12 * speed);
+            posBot = posBot + 0.25 * speed;
         }else{
             colidiu  = false;
         }

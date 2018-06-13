@@ -121,28 +121,28 @@ void Desenha(){
         DesenhaCarro(vermelho);
     glPopMatrix();
 
-    // for(int i = 0; i < tamPista; i+=991){
-    //     glPushMatrix();
-    //         if(contador == 0){
-    //             contador++;
-    //             dxBot = 0;
-    //             DesenhaBots(corBot[contador], i, dxBot);
-    //         }else if(contador == 1){
-    //             contador++;
-    //             dxBot = 35;
-    //             DesenhaBots(corBot[contador], i, dxBot);
-    //         }else if(contador == 2){
-    //             contador++;
-    //             dxBot = 0;
-    //             DesenhaBots(corBot[contador], i, dxBot);
-    //         }else if(contador == 3){
-    //             contador = 0;
-    //             dxBot = -35;
-    //             DesenhaBots(corBot[contador], i, dxBot);
-    //         }
-    //     glPopMatrix();
-    // }
-     DesenhaBots(amarelo, 0, 0);
+    for(int i = 0; i < tamPista; i+=991){
+        glPushMatrix();
+            if(contador == 0){
+                contador++;
+                dxBot = 0;
+                DesenhaBots(corBot[contador], i, dxBot);
+            }else if(contador == 1){
+                contador++;
+                dxBot = 35;
+                DesenhaBots(corBot[contador], i, dxBot);
+            }else if(contador == 2){
+                contador++;
+                dxBot = 0;
+                DesenhaBots(corBot[contador], i, dxBot);
+            }else if(contador == 3){
+                contador = 0;
+                dxBot = -35;
+                DesenhaBots(corBot[contador], i, dxBot);
+            }
+        glPopMatrix();
+    }
+    //  DesenhaBots(amarelo, 0, 0);
 
     // Verifica Teclas:
     if(botoes[0] && anima){
