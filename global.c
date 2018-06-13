@@ -207,10 +207,10 @@ void DesenhaBots(GLfloat *cor, GLint dzBot, GLint dx){
            
             anima = anima ? false : true;
             
-            speed = 1;
+            speed = 0.5 * speed > 2 ? 0.5 * speed : 2;
             pos = pos - 200;
             usleep(60000);
-            TimerFunc(1000);
+            TimerFunc(1000  );
             anima = anima ? false : true;
         }
     // }
