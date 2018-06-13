@@ -55,9 +55,9 @@ void TimerFunc(int valor){
     }
     //Controle de velocidade
 	// if((int)pos%tamPista == 0) volta++; //Cada volta no mapa tem tamPista posições.
-	if(speed<15+(volta*2)) speed += 0.005;//Aceleracao maxima 35, aumenta em 2 para cada volta.
-	if(speed<10) speed += 0.005;			//Aceleracao 0.2 quando abaixo de speed 20.
-	if(speed<5) speed += 0.005;			//Aceleracao 0.3 quando abaixo de speed 05.
+	if(speed<30+(volta*2)) speed += 0.1;//Aceleracao maxima 30, aumenta em 2 para cada volta.
+	if(speed<20) speed += 0.1;			//Aceleracao 0.2 quando abaixo de speed 20.
+	if(speed<10) speed += 0.1;			//Aceleracao 0.3 quando abaixo de speed 10.
     
     //Inércia nas curvas
 	if(Pontos.ponto[pos].curve > 0 ){ //Curva para a direita.
