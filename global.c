@@ -181,7 +181,6 @@ void SpecialKeys (int key, int x, int y){
 }
  
 void DesenhaBots(GLfloat *cor, GLint dzBot, GLint dx){
-    int i = 0;
     // Verifica se posBot+dzBot esta dentro do range (0-tamPista)
     if((posBot + dzBot) > tamPista){
         dzBot = -(tamPista - dzBot);
@@ -208,8 +207,16 @@ void DesenhaBots(GLfloat *cor, GLint dzBot, GLint dx){
             colidiu = true;
             pos -= 1+(0.12 * speed);
             posBot = posBot + 0.25 * speed;
-        }else{
-            colidiu  = false;
+        }else if(colidiu){
+           if( (pos > (posBot+dzBot-270) && pos < posBot+dzBot-140) && (              // estao na mesma posicao em z
+                (carPosX - 19 <= dx && carPosX >= dx) || // player do lado direito do bot
+                (carPosX + 19 >= dx && carPosX <= dx) )  // player do lado esquerdo do bot
+            ){
+                pos -= 1+(0.12 * speed);
+                posBot = posBot + 0.25 * speed;
+            }
+            else 
+                colidiu  = false;
         }
     // }
 }

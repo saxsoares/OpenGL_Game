@@ -150,7 +150,7 @@ void Desenha(){
         posBot = posBot + 0.05   *speed;
         // printf("valor: %.2f - pos: %d\n", Pontos.ponto[posBot].x *-0.2, pos);
     }
-    if((botoes[1] || colidiu ) && anima){
+    if((botoes[1] ) && anima){
         pos -= (0.12 * speed);
         posBot = posBot + 0.15 * speed;
         // printf("valor: %.2f - pos: %d\n",Pontos.ponto[posBot].x *-0.2, pos);
