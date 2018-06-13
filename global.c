@@ -204,19 +204,14 @@ void DesenhaBots(GLfloat *cor, GLint dzBot, GLint dx){
             (carPosX + 18 >= dx && carPosX <= dx) )  // player do lado esquerdo do bot
         )  
         {
-            colidiu = true;
-            pos -= 1+(0.12 * speed);
-            posBot = posBot + 0.25 * speed;
-        }else if(colidiu){
-           if( (pos > (posBot+dzBot-270) && pos < posBot+dzBot-140) && (              // estao na mesma posicao em z
-                (carPosX - 19 <= dx && carPosX >= dx) || // player do lado direito do bot
-                (carPosX + 19 >= dx && carPosX <= dx) )  // player do lado esquerdo do bot
-            ){
-                pos -= 1+(0.12 * speed);
-                posBot = posBot + 0.25 * speed;
-            }
-            else 
-                colidiu  = false;
+           
+            anima = anima ? false : true;
+            
+            speed = 1;
+            pos = pos - 200;
+            usleep(60000);
+            TimerFunc(1000);
+            anima = anima ? false : true;
         }
     // }
 }

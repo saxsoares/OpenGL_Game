@@ -25,11 +25,6 @@ void InitScreen(){
 void TimerFunc(int valor){
     int f = valor;
     pos += speed ;
-    if(colidiu){ 
-        speed = speed * 0.5;
-        pos -= 1;
-    }    
-    // Pontos.ponto[posBot].bot = false;
     posBot = posBot + 0.8   *speed;
     
     while(pos >= tamPista){
