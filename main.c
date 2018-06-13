@@ -121,37 +121,37 @@ void Desenha(){
         DesenhaCarro(vermelho);
     glPopMatrix();
 
-    for(int i = 0; i < tamPista; i+=991){
-        glPushMatrix();
-            if(contador == 0){
-                contador++;
-                dxBot = 0;
-                DesenhaBots(corBot[contador], i, dxBot);
-            }else if(contador == 1){
-                contador++;
-                dxBot = 35;
-                DesenhaBots(corBot[contador], i, dxBot);
-            }else if(contador == 2){
-                contador++;
-                dxBot = 0;
-                DesenhaBots(corBot[contador], i, dxBot);
-            }else if(contador == 3){
-                contador = 0;
-                dxBot = -35;
-                DesenhaBots(corBot[contador], i, dxBot);
-            }
-        glPopMatrix();
-    }
-    // DesenhaBots(amarelo, 0, 0);
+    // for(int i = 0; i < tamPista; i+=991){
+    //     glPushMatrix();
+    //         if(contador == 0){
+    //             contador++;
+    //             dxBot = 0;
+    //             DesenhaBots(corBot[contador], i, dxBot);
+    //         }else if(contador == 1){
+    //             contador++;
+    //             dxBot = 35;
+    //             DesenhaBots(corBot[contador], i, dxBot);
+    //         }else if(contador == 2){
+    //             contador++;
+    //             dxBot = 0;
+    //             DesenhaBots(corBot[contador], i, dxBot);
+    //         }else if(contador == 3){
+    //             contador = 0;
+    //             dxBot = -35;
+    //             DesenhaBots(corBot[contador], i, dxBot);
+    //         }
+    //     glPopMatrix();
+    // }
+     DesenhaBots(amarelo, 0, 0);
 
     // Verifica Teclas:
     if(botoes[0] && anima){
-        pos += (0.1 * speed);
+        pos += (0.12 * speed);
         posBot = posBot + 0.05   *speed;
         // printf("valor: %.2f - pos: %d\n", Pontos.ponto[posBot].x *-0.2, pos);
     }
-    if(botoes[1] && anima){
-        pos -= (0.1 * speed);
+    if((botoes[1] || colidiu ) && anima){
+        pos -= (0.12 * speed);
         posBot = posBot + 0.15 * speed;
         // printf("valor: %.2f - pos: %d\n",Pontos.ponto[posBot].x *-0.2, pos);
     }
@@ -210,10 +210,10 @@ int main(int argc, char *argv[]){
         ponto.cor =   flagCor;
 
         // Curvas
-        if( i > 1800 && i < 2800) ponto.curve = 0.001;
-        if( i > 3800 && i < 4800) ponto.curve = -0.001;
-        if( i > 5800 && i < 8800) ponto.curve = 0.001;
-        if( i > 12800 && i < 14800) ponto.curve = -0.001;
+        // if( i > 1800 && i < 2800) ponto.curve = 0.001;
+        // if( i > 3800 && i < 4800) ponto.curve = -0.001;
+        // if( i > 5800 && i < 8800) ponto.curve = 0.001;
+        // if( i > 12800 && i < 14800) ponto.curve = -0.001;
         // if( i > 10000 && i < 12000) ponto.curve = 0.001;
         // if( i > 15000 && i < 17000) ponto.curve = -0.001;
 

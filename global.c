@@ -1,5 +1,5 @@
 #include "global.h"
-
+#include <unistd.h>
 GLfloat abobora[]={.99,.06,.75},     amarelo[]={1,1,0},     azul[]={0,0,1},      azulCeu[]={.53,.81,.98}, azulEsc[]={0,0,.55},
         azulMarinho[]={.07,.04,.56}, azulCiano[]={0,1,1},   branco[]={1,1,1},    cinza[]={.5,.5,.5},      cinzaClaro[]={.7,.7,.7},
         cinzaEsc[]={.66,.66,.66},    furchsia[]={1,0,1},    jambo[]={1,.27,0},  fuligem[]={.24,.17,.12}, laranja[]={1,.65,0},
@@ -16,7 +16,7 @@ GLdouble x_0=0,     y_0=40.0,   z_0= -100,
          xCam = 0,  yCam= 0,    zCam=0;
 
 // Game
-GLboolean anima = false;
+GLboolean anima = false, colidiu = false;
 GLint contaCor = 0, voltaAnt = 0;
 
 
@@ -27,12 +27,12 @@ GLint tamPista = 15000, larPista = 80, volta = 0;
 // Jogador
 GLfloat s_car = 1;
 GLint pos = 0;
-GLfloat carPosX = 0, viraCarro = 0, speed = 1;
+GLfloat carPosX = 0.0, viraCarro = 0, speed = 1;
 
 // Bot
 GLint posBot = 500;
 GLfloat *corBot[] = {amarelo, verde, azul, rosa};
-GLint dxBot, contador;
+GLint teste = 0;
 
 void initArray(Array *a, size_t initialSize) {
   a->ponto = (Ponto_t *)calloc(initialSize , sizeof(Ponto_t));
@@ -159,22 +159,27 @@ void SpecialKeys (int key, int x, int y){
     // printf("key: %d\n", key);
     switch(key){
         case GLUT_KEY_RIGHT:
-            
+            carPosX += 1;
+            printf("carPosX: %g\n", carPosX);
             break;
         case GLUT_KEY_LEFT:
-            
+            carPosX -= 1;
+            printf("carPosX: %g\n", carPosX);
             break;
         case GLUT_KEY_UP:
-            rotBot += 0.1;
+            pos += 1;
+            printf("pos: %d - posBot: %d\n", pos, posBot);
             break;
         case GLUT_KEY_DOWN:
-            rotBot -= 0.1;
+            pos -= 1;
+            printf("pos: %d - posBot: %d\n", pos, posBot);
             break;
         default:
             break;
     }
+    printf("posBot: %d\n", posBot);
 }
-GLfloat rotBot;
+ 
 void DesenhaBots(GLfloat *cor, GLint dzBot, GLint dx){
    
     // Virifica se posBot+dzBot esta dentro do range (0-tamPista)
@@ -184,7 +189,6 @@ void DesenhaBots(GLfloat *cor, GLint dzBot, GLint dx){
     GLint da = abs(Pontos.ponto[posBot+dzBot].z - Pontos.ponto[pos].z);
     GLint db = abs(tamPista - abs(Pontos.ponto[pos].z) + abs(Pontos.ponto[posBot+dzBot].z)); // Se um ja reiniciou a pista e o outro nao
     GLint distBotfromPlayer = da > db ? db : da;        // Distancia real entre o bot e o player
-    printf("dist: %d - rotBot: %.1f\n", distBotfromPlayer, rotBot);
     glPushMatrix();     // BOT
         glTranslatef(Pontos.ponto[posBot+dzBot].x + dx, 0,Pontos.ponto[posBot+dzBot].z+pos-(Pontos.ponto[posBot+dzBot].z+pos > 0 ? tamPista : 0));
         glTranslatef(0,0,-5);       // Calculo de quanto o bot vira nas curvas em função da distancia entre ele e o bot e se o player esta ou nao em curva
@@ -194,4 +198,20 @@ void DesenhaBots(GLfloat *cor, GLint dzBot, GLint dx){
         glScalef(s_car, s_car, s_car);
         DesenhaCarro(cor);
     glPopMatrix();
+
+    // if(distBotfromPlayer < 400){
+        if( (pos > (posBot+dzBot-220) && pos < posBot+dzBot-140) && (              // estao na mesma posicao em z
+            (carPosX - 18 <= dx && carPosX >= dx) || // player do lado direito do bot
+            (carPosX + 18 >= dx && carPosX <= dx) )  // player do lado esquerdo do bot
+        )  
+        {
+            colidiu = true;
+            botoes[2] = botoes[3] = false;
+            speed = speed > 1 ? 0.9 * speed : 1.1; 
+            pos -= (0.12 * speed);
+            posBot = posBot + 0.15 * speed;
+        }else{
+            colidiu  = false;
+        }
+    // }
 }

@@ -42,7 +42,7 @@ extern GLdouble x_0,    y_0,    z_0,
                 V_x,    V_y,   V_z,
                 xCam,   yCam,   zCam;
 // Game
-extern GLboolean anima;
+extern GLboolean anima, colidiu;
 extern GLint volta, contaCor, voltaAnt;
 
 // Pista
@@ -59,8 +59,10 @@ extern GLint pos;
 extern GLfloat s_car, carPosX, viraCarro, speed;
 
 // Bot
-extern GLfloat *corBot[], rotBot;
-extern GLint posBot, dxBot, contador;
+extern GLfloat *corBot[], speed;
+extern GLint posBot;
+GLfloat rotBot;
+GLint contador, dxBot;
 
 int main(int, char**);
 void initArray(Array *a, size_t initialSize);
@@ -83,7 +85,7 @@ void DesenhaGrade();
 void DesenhaCarro(GLfloat *);
 void DesenhaBots(GLfloat *, GLint, GLint);
 void DesenhaPista();
-
+void Desecelera();
 void DesenhaSeg(GLfloat *cor, float x1, float z1, float y1, float x2, float z2, float y2, float w2);
 void IdleFunc();
 
