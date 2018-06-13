@@ -209,12 +209,12 @@ int main(int argc, char *argv[]){
         ponto.cor =   flagCor;
 
         // Curvas
-        // if( i > 1800 && i < 2800) ponto.curve = 0.001;
-        // if( i > 3800 && i < 4800) ponto.curve = -0.001;
-        // if( i > 5800 && i < 8800) ponto.curve = 0.001;
-        // if( i > 12800 && i < 14800) ponto.curve = -0.001;
-        // if( i > 10000 && i < 12000) ponto.curve = 0.001;
-        // if( i > 15000 && i < 17000) ponto.curve = -0.001;
+        if( i > 1800 && i < 2800) ponto.curve = 0.001;
+        if( i > 3800 && i < 4800) ponto.curve = -0.001;
+        if( i > 5800 && i < 8800) ponto.curve = 0.001;
+        if( i > 12800 && i < 14800) ponto.curve = -0.001;
+        if( i > 10000 && i < 12000) ponto.curve = 0.001;
+        if( i > 15000 && i < 17000) ponto.curve = -0.001;
 
         insertArray(&Pontos, ponto);
     }
