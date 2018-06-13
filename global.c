@@ -191,27 +191,42 @@ void DesenhaBots(GLfloat *cor, GLint dzBot, GLint dx){
     glPushMatrix();     // BOT
         glTranslatef(Pontos.ponto[posBot+dzBot].x + dx, 0,Pontos.ponto[posBot+dzBot].z+pos-(Pontos.ponto[posBot+dzBot].z+pos > 0 ? tamPista : 0));
         glTranslatef(0,0,-5);       // Calculo de quanto o bot vira nas curvas em função da distancia entre ele e o bot e se o player esta ou nao em curva
-        glRotatef(- ((int)(Pontos.ponto[posBot+dzBot].curve*1000) ? Pontos.ponto[posBot+dzBot].curve : Pontos.ponto[pos].curve) * 1000 * (distBotfromPlayer/35), 0, 1, 0);
+        glRotatef(- ((int)(Pontos.ponto[posBot+dzBot].curve*1000) ? Pontos.ponto[posBot+dzBot].curve : Pontos.ponto[pos].curve) * 1200 * (distBotfromPlayer/35), 0, 1, 0);
         glRotatef(Pontos.ponto[posBot+dzBot].curve * 2000, 0, 0, 1);
         glTranslatef(0,0,+5);
         glScalef(s_car, s_car, s_car);
         DesenhaCarro(cor);
     glPopMatrix();
 
-    // if(distBotfromPlayer < 400){
+    if(Pontos.ponto[pos].curve == 0.0){
         if( (pos > (posBot+dzBot-220) && pos < posBot+dzBot-140) && (              // estao na mesma posicao em z
             (carPosX - 18 <= dx && carPosX >= dx) || // player do lado direito do bot
             (carPosX + 18 >= dx && carPosX <= dx) )  // player do lado esquerdo do bot
         )  
         {
-           
-            anima = anima ? false : true;
+            colidiu = true;
+            posQndoBateu = 0;
             
-            speed = 0.5 * speed > 2 ? 0.5 * speed : 2;
-            pos = pos - 200;
-            usleep(60000);
-            TimerFunc(1000  );
-            anima = anima ? false : true;
         }
-    // }
+    }else if(Pontos.ponto[pos].curve > 0.0){
+        if( (pos > (posBot+dzBot-220) && pos < posBot+dzBot-140) && (              // estao na mesma posicao em z
+            (carPosX - 26 <= dx && carPosX >= dx) || // player do lado direito do bot
+            (carPosX + 10 >= dx && carPosX <= dx) )  // player do lado esquerdo do bot
+        )  
+        {
+            colidiu = true;
+            posQndoBateu = 0;
+            
+        }
+    }else if(Pontos.ponto[pos].curve < 0.0){
+        if( (pos > (posBot+dzBot-220) && pos < posBot+dzBot-140) && (              // estao na mesma posicao em z
+            (carPosX - 10 <= dx && carPosX >= dx) || // player do lado direito do bot
+            (carPosX + 26 >= dx && carPosX <= dx) )  // player do lado esquerdo do bot
+        )  
+        {
+            colidiu = true;
+            posQndoBateu = 0;
+            
+        }
+    }
 }

@@ -24,12 +24,23 @@ void InitScreen(){
 }
 void TimerFunc(int valor){
     int f = valor;
-    pos += speed ;
-    posBot = posBot + 0.8   *speed;
-    
+    if(colidiu){
+        if(posQndoBateu > 100) {
+            colidiu = false;
+        }else{
+            speed = 0.98 * speed > 8 ? 0.98 * speed : 2;
+            pos = pos - 0.5;
+            posQndoBateu++;
+        }
+    }
+    else{
+        pos += speed ;
+    }
+        posBot = posBot + 0.8*speed;
+        
     while(pos >= tamPista){
-         pos -= tamPista;
-         volta++;
+        pos -= tamPista;
+        volta++;
     }
     while(pos < 0)            pos += tamPista;
     while(posBot >= tamPista) posBot -= tamPista;
@@ -53,20 +64,20 @@ void TimerFunc(int valor){
         glClearColor(.0f, .0f, 0, .0f);
     }
     //Controle de velocidade
-	// if((int)pos%tamPista == 0) volta++; //Cada volta no mapa tem tamPista posições.
-	if(speed<15+(volta*2)) speed += 0.005;//Aceleracao maxima 35, aumenta em 2 para cada volta.
-	if(speed<10) speed += 0.005;			//Aceleracao 0.2 quando abaixo de speed 20.
-	if(speed<5) speed += 0.005;			//Aceleracao 0.3 quando abaixo de speed 05.
+    // if((int)pos%tamPista == 0) volta++; //Cada volta no mapa tem tamPista posições.
+    if(speed<15+(volta*2)) speed += 0.005;//Aceleracao maxima 35, aumenta em 2 para cada volta.
+    if(speed<10) speed += 0.005;			//Aceleracao 0.2 quando abaixo de speed 20.
+    if(speed<5) speed += 0.005;			//Aceleracao 0.3 quando abaixo de speed 05.
     
     //Inércia nas curvas
-	if(Pontos.ponto[pos].curve > 0 ){ //Curva para a direita.
-		if(carPosX >= -(larPista/2+25)) 
+    if(Pontos.ponto[pos].curve > 0 ){ //Curva para a direita.
+        if(carPosX >= -(larPista/2+25)) 
             carPosX = carPosX-1.3*speed/(15+(volta*2));	
-	}
-	if(Pontos.ponto[pos].curve < 0 ){ //Curva para a esquerda.
-		if(carPosX <= larPista/2+25) 
+    }
+    if(Pontos.ponto[pos].curve < 0 ){ //Curva para a esquerda.
+        if(carPosX <= larPista/2+25) 
             carPosX = carPosX+1.3*speed/(15+(volta*2));
-	}	
+    }	
 
     InitScreen();
     if(anima)
@@ -89,7 +100,7 @@ void DesenhaPista(){
        
         DesenhaSeg(p1->cor? grassColorA : grassColorB,  
                     p1->x, p1->y-2, p1->z+pos-(n-1>=tamPista?tamPista:0), 
-                    p2->x, p2->y-2, p2->z+pos-(n  >=tamPista?tamPista:0), larPista*10);
+                    p2->x, p2->y-2, p2->z+pos-(n  >=tamPista?tamPista:0), larPista*200);
         DesenhaSeg(p1->cor? preto : branco,
                     p1->x, p1->y-1, p1->z+pos-(n-1>=tamPista?tamPista:0), 
                     p2->x, p2->y-1, p2->z+pos-(n  >=tamPista?tamPista:0), larPista*1.2);
@@ -144,38 +155,40 @@ void Desenha(){
     //  DesenhaBots(amarelo, 0, 0);
 
     // Verifica Teclas:
-    if(botoes[0] && anima){
-        pos += (0.12 * speed);
-        posBot = posBot + 0.05   *speed;
-        // printf("valor: %.2f - pos: %d\n", Pontos.ponto[posBot].x *-0.2, pos);
-    }
-    if((botoes[1] ) && anima){
-        pos -= (0.12 * speed);
-        posBot = posBot + 0.15 * speed;
-        // printf("valor: %.2f - pos: %d\n",Pontos.ponto[posBot].x *-0.2, pos);
-    }
-    if(botoes[2]){
-        carPosX = carPosX >=  -(larPista/2+30)? carPosX - 1.5 * speed/(15+(volta*2)): carPosX;
-        viraCarro = viraCarro > 25 ? viraCarro : viraCarro + 0.8;
-        if(anima) speed = speed > 1 ? speed + abs(carPosX) * 0.0001 * speed/(15+(volta*2)) : 1;
-    }
-    if(botoes[3]){
-        carPosX = carPosX <=  larPista/2+30? carPosX + 1.5 * speed/(15+(volta*2)): carPosX;
-        viraCarro = viraCarro <-25 ? viraCarro : viraCarro - 0.8;
-        if(anima) speed = speed > 1 ? speed + abs(carPosX) * 0.0001 * speed/(15+(volta*2)): 1;
+    if(!colidiu){
+        if(botoes[0] && anima){
+            pos += (0.12 * speed);
+            posBot = posBot + 0.05   *speed;
+            // printf("valor: %.2f - pos: %d\n", Pontos.ponto[posBot].x *-0.2, pos);
+        }
+        if((botoes[1] ) && anima){
+            pos -= (0.12 * speed);
+            posBot = posBot + 0.15 * speed;
+            // printf("valor: %.2f - pos: %d\n",Pontos.ponto[posBot].x *-0.2, pos);
+        }
+        if(botoes[2]){
+            carPosX = carPosX >=  -(larPista/2+30)? carPosX - 1.5 * speed/(15+(volta*2)): carPosX;
+            viraCarro = viraCarro > 25 ? viraCarro : viraCarro + 0.8;
+            if(anima) speed = speed > 1 ? speed + abs(carPosX) * 0.0001 * speed/(15+(volta*2)) : 1;
+        }
+        if(botoes[3]){
+            carPosX = carPosX <=  larPista/2+30? carPosX + 1.5 * speed/(15+(volta*2)): carPosX;
+            viraCarro = viraCarro <-25 ? viraCarro : viraCarro - 0.8;
+            if(anima) speed = speed > 1 ? speed + abs(carPosX) * 0.0001 * speed/(15+(volta*2)): 1;
+        }
+        
+        if(!botoes[2] && !botoes[3]){
+            if(viraCarro > 0){
+                viraCarro = viraCarro * 0.92;
+            }else if (viraCarro < 0){
+                viraCarro = viraCarro * 0.92;
+            }
+        }
     }
     while(pos >= tamPista)    pos -= tamPista;
     while(pos < 0)           pos += tamPista;
     while(posBot >= tamPista) posBot -= tamPista;
     while(posBot < 0)        posBot += tamPista;
-
-    if(!botoes[2] && !botoes[3]){
-        if(viraCarro > 0){
-            viraCarro = viraCarro * 0.92;
-        }else if (viraCarro < 0){
-            viraCarro = viraCarro * 0.92;
-        }
-    }
 
     glFlush();
     glutSwapBuffers();
