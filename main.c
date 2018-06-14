@@ -83,13 +83,8 @@ void TimerFunc(int valor){
     //printf("posCarro: %lf \t tamPista: %d\n", carPosX, tamPista);
 
     // verifica se o carro está tocando alguma das bordas e desacelera
-    if(isTouchingRight() || isTouchingLeft()){
-        printf("debug: TOUCHING\n");
-        if(speed >= 3)
-            speed -= 0.08;
-    }else{
-        printf("debug: NOT TOUCHING\n");
-    }
+    if(isTouchingRight() || isTouchingLeft())
+        speed = speed >= 3 ? speed - 0.08 : speed ;
 
     InitScreen();
     if(anima)
@@ -127,6 +122,17 @@ void DesenhaPista(){
 void Desenha(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
     
+    
+    glColor3f(1.0,1.0,1.0);
+    
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluOrtho2D(-1.0,1.0,-1.0,1.0);
+    Msg("Precione 'p' para pausar animacao e 'P' para reiniciar",-.9,.9);
+    InitScreen();
     // Pista
     glPushMatrix();
         DesenhaPista();
@@ -171,12 +177,10 @@ void Desenha(){
         if(botoes[0] && anima){
             pos += (0.12 * speed);
             posBot += 0.05 * speed;
-            // printf("valor: %.2f - pos: %d\n", Pontos.ponto[posBot].x *-0.2, pos);
         }
         if((botoes[1] ) && anima){
             pos -= (0.12 * speed);
             posBot += 0.15 * speed;
-            // printf("valor: %.2f - pos: %d\n",Pontos.ponto[posBot].x *-0.2, pos);
         }
         if(botoes[2] && !isTouchingLeft()){ // impedir virar pra esquerda quando estiver fora da pista
             carPosX = carPosX >= -(larPista/2+30)? carPosX - 1.5 * speed/(15+(volta*2)): carPosX;
