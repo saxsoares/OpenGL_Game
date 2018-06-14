@@ -81,7 +81,16 @@ void Reshape(int w, int h){
     InitScreen();
 }
 
+// check if the car is touching border or not
+// por algum motivo  M I S T E R I O S O  não consegui colocar as duas
+// condições dentro do mesmo método. Bizarro mesmo. Separei em touch left/right
+int isTouchingLeft(){
+    return carPosX >= -(larPista/2+30) ? 0 : 1; //touching left side
+}
 
+int isTouchingRight(){
+    return carPosX <= larPista/2+30 ? 0 : 1; //touching right side
+}
 
 void MovimentaMouse(int x, int y){
     y = w_height - y;
@@ -230,3 +239,4 @@ void DesenhaBots(GLfloat *cor, GLint dzBot, GLint dx){
         }
     }
 }
+
