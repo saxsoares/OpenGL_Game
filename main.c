@@ -36,7 +36,7 @@ void TimerFunc(int valor){
     else{
         pos += speed ;
     }
-        posBot = posBot + 0.8*speed;
+    posBot += 0.8*speed;
         
     while(pos >= tamPista){
         pos -= tamPista;
@@ -77,7 +77,19 @@ void TimerFunc(int valor){
     if(Pontos.ponto[pos].curve < 0 ){ //Curva para a esquerda.
         if(carPosX <= larPista/2+25) 
             carPosX = carPosX+1.3*speed/(15+(volta*2));
-    }	
+    }
+    
+    // debug (ignore)
+    //printf("posCarro: %lf \t tamPista: %d\n", carPosX, tamPista);
+
+    // verifica se o carro está tocando alguma das bordas e desacelera
+    if(isTouchingRight() || isTouchingLeft()){
+        printf("debug: TOUCHING\n");
+        if(speed >= 3)
+            speed -= 0.08;
+    }else{
+        printf("debug: NOT TOUCHING\n");
+    }
 
     InitScreen();
     if(anima)
@@ -158,21 +170,21 @@ void Desenha(){
     if(!colidiu){
         if(botoes[0] && anima){
             pos += (0.12 * speed);
-            posBot = posBot + 0.05   *speed;
+            posBot += 0.05 * speed;
             // printf("valor: %.2f - pos: %d\n", Pontos.ponto[posBot].x *-0.2, pos);
         }
         if((botoes[1] ) && anima){
             pos -= (0.12 * speed);
-            posBot = posBot + 0.15 * speed;
+            posBot += 0.15 * speed;
             // printf("valor: %.2f - pos: %d\n",Pontos.ponto[posBot].x *-0.2, pos);
         }
-        if(botoes[2]){
-            carPosX = carPosX >=  -(larPista/2+30)? carPosX - 1.5 * speed/(15+(volta*2)): carPosX;
+        if(botoes[2] && !isTouchingLeft()){ // impedir virar pra esquerda quando estiver fora da pista
+            carPosX = carPosX >= -(larPista/2+30)? carPosX - 1.5 * speed/(15+(volta*2)): carPosX;
             viraCarro = viraCarro > 25 ? viraCarro : viraCarro + 0.8;
             if(anima) speed = speed > 1 ? speed + abs(carPosX) * 0.0001 * speed/(15+(volta*2)) : 1;
         }
-        if(botoes[3]){
-            carPosX = carPosX <=  larPista/2+30? carPosX + 1.5 * speed/(15+(volta*2)): carPosX;
+        if(botoes[3] && !isTouchingRight()){ // impedir virar pra direita quando estiver fora da pista
+            carPosX = carPosX <= larPista/2+30? carPosX + 1.5 * speed/(15+(volta*2)): carPosX;
             viraCarro = viraCarro <-25 ? viraCarro : viraCarro - 0.8;
             if(anima) speed = speed > 1 ? speed + abs(carPosX) * 0.0001 * speed/(15+(volta*2)): 1;
         }

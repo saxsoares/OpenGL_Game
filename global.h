@@ -66,6 +66,8 @@ GLfloat rotBot;
 GLint contador, dxBot;
 
 int main(int, char**);
+int isTouchingLeft();
+int isTouchingRight();
 void initArray(Array *a, size_t initialSize);
 void insertArray(Array *a, Ponto_t element);
 void freeArray(Array *a);
