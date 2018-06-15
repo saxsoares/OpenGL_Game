@@ -184,12 +184,16 @@ void Desenha(){
         }
         if(botoes[2] && !isTouchingLeft()){ // impedir virar pra esquerda quando estiver fora da pista
             carPosX = carPosX >= -(larPista/2+30)? carPosX - 1.5 * speed/(15+(volta*2)): carPosX;
+            if(viraCarro < 0)
+                viraCarro = viraCarro > 25 ? viraCarro : viraCarro + 1.5;
             viraCarro = viraCarro > 25 ? viraCarro : viraCarro + 0.8;
             if(anima) speed = speed > 1 ? speed + abs(carPosX) * 0.0001 * speed/(15+(volta*2)) : 1;
         }
         if(botoes[3] && !isTouchingRight()){ // impedir virar pra direita quando estiver fora da pista
             carPosX = carPosX <= larPista/2+30? carPosX + 1.5 * speed/(15+(volta*2)): carPosX;
-            viraCarro = viraCarro <-25 ? viraCarro : viraCarro - 0.8;
+            if(viraCarro > 0)
+                viraCarro = viraCarro < -25 ? viraCarro : viraCarro - 1.5;
+            viraCarro = viraCarro < -25 ? viraCarro : viraCarro - 0.8;
             if(anima) speed = speed > 1 ? speed + abs(carPosX) * 0.0001 * speed/(15+(volta*2)): 1;
         }
         
