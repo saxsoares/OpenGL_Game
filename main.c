@@ -30,6 +30,11 @@ void TimerFunc(int valor){
         }else{
             speed = 0.98 * speed > 8 ? 0.98 * speed : 2;
             pos = pos - 0.5;
+            if(viraCarro > 0){
+                viraCarro = viraCarro * 0.90;
+            }else if (viraCarro < 0){
+                viraCarro = viraCarro * 0.90;
+            }
             posQndoBateu++;
         }
     }
