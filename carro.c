@@ -1,6 +1,6 @@
 #include "global.h"
 
-void DesenhaCarro(float R, float G, float B){
+void DesenhaCarro(GLfloat *cor){
     glPushMatrix();
         //Roda dianteira esquerda
         glColor3f(0.1, 0.1, 0.1);
@@ -142,7 +142,7 @@ void DesenhaCarro(float R, float G, float B){
             glEnd();
 
         //Laterais
-        glColor3f(R, G , B);
+        glColor3fv(cor);
         glBegin(GL_TRIANGLES);
             //Esquerda
             glVertex3f(-8.5, 5.4, 0.0);   glVertex3f(-8.5, 5.4, -2.5);   glVertex3f(-8.5, 11.6, 0.0);//01
@@ -198,7 +198,7 @@ void DesenhaCarro(float R, float G, float B){
                 glVertex3f(8.5, 5.4, -2.5); glVertex3f(8.5, 5.4, 0.0);
 
             //Cavidade traseira
-            glColor3f(R, G, B);
+            glColor3fv(cor);
             glVertex3f(-8.5, 5.4, -2.5);  glVertex3f(8.5, 5.4, -2.5);
             glVertex3f(8.5, 8.1, -5.1);   glVertex3f(-8.5, 8.1, -5.1);
 
@@ -246,7 +246,7 @@ void DesenhaCarro(float R, float G, float B){
                 glVertex3f(8.5, 4.5, -40.0); glVertex3f(8.5, 4.5, -36.7);
 
             //Dianteira
-            glColor3f(R, G, B);
+            glColor3fv(cor);
             glVertex3f(-8.5, 4.5, -40.0);  glVertex3f(8.5, 4.5, -40.0);
             glVertex3f(8.5, 9.6, -40.0);   glVertex3f(-8.5, 9.6, -40.0);
 
