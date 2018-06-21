@@ -50,16 +50,8 @@ void TimerFunc(int valor){
     while(pos < 0)            pos += tamPista;
     while(posBot >= tamPista) posBot -= tamPista;
     while(posBot < 0)         posBot += tamPista;
-    
-    //Controle do escurecimento
-
-    glPushMatrix();
-    glTranslatef(0, 40, -80);
-        glutSolidCube(5);
-    glPopMatrix();
-    
+  
     //Controle do céu
-    
     if(volta != voltaAnt){
         voltaAnt = volta;
         contaCor = (contaCor+1) % 4;
