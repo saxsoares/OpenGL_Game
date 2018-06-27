@@ -1,27 +1,122 @@
 #include "global.h"
 
-// Player
 
+//Mostra o logo do Enduro
+void Titulo1(){
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
+    glColor3f(1.0,1.0,1.0);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
 
-// Bot
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluOrtho2D(-1.0,1.0,-1.0,1.0);
 
+    MsgGde("Enduro", -.1,0);
 
-void InitScreen(){
-    w_width = glutGet(GLUT_WINDOW_WIDTH);
-    w_height = glutGet(GLUT_WINDOW_HEIGHT);
-
-    glMatrixMode(GL_PROJECTION); //define que a matrix é a de projeção
-    glLoadIdentity(); //carrega a matrix de identidade
-    gluPerspective(theta, aspect, d_near, d_far);
-
-    glPushMatrix();
-        glMatrixMode(GL_MODELVIEW); //define que a matrix é a model view
-        glLoadIdentity(); //carrega a matrix de identidade
-        gluLookAt(x_0,   y_0,   z_0,
-                  x_ref, y_ref, z_ref,
-                  V_x,   V_y,   V_z);
-    glPopMatrix();
+    glFlush();
+    glutSwapBuffers();
+    delay(2);
+    glutDisplayFunc(Titulo2);
 }
+//Mostra alguma outra coisa
+void Titulo2(){
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
+      
+    glColor3f(1.0,1.0,1.0);
+    	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluOrtho2D(-1.0,1.0,-1.0,1.0);
+    MsgGde("Grupo", -.1,0);
+
+    glFlush();
+    glutSwapBuffers();
+    delay(2);
+    glutDisplayFunc(Desenha);
+}
+
+void DesenhaPista(){
+    Ponto_t *p2, *p1;
+    int n;
+    x= 0;
+    dx = 0;
+    // Pontos.ponto[posBot].bot = true;
+    for(n = pos; n < pos+2500; n++){
+        
+        p1 = &(Pontos.ponto[(n-1)%tamPista]);
+        p2 = &(Pontos.ponto[n%tamPista]);
+        x += dx;
+        dx += p2->curve;
+        p2->x = x;
+       
+        DesenhaSeg(p1->cor? grassColorA : grassColorB,  
+                    p1->x, p1->y-2, p1->z+pos-(n-1>=tamPista?tamPista:0), 
+                    p2->x, p2->y-2, p2->z+pos-(n  >=tamPista?tamPista:0), larPista*200);
+        DesenhaSeg(p1->cor? preto : branco,
+                    p1->x, p1->y-1, p1->z+pos-(n-1>=tamPista?tamPista:0), 
+                    p2->x, p2->y-1, p2->z+pos-(n  >=tamPista?tamPista:0), larPista*1.2);
+        DesenhaSeg(p1->cor? roadColorA: roadColorB,   
+                    p1->x, p1->y,   p1->z+pos-(n-1>=tamPista?tamPista:0), 
+                    p2->x, p2->y,   p2->z+pos-(n  >=tamPista?tamPista:0), larPista);
+
+        
+    }
+}
+
+void DesenhaBots(GLfloat *cor, GLint dzBot, GLint dx){
+    // Verifica se posBot+dzBot esta dentro do range (0-tamPista)
+    if((posBot + dzBot) > tamPista){
+        dzBot = -(tamPista - dzBot);
+    }
+    GLint da = abs(Pontos.ponto[posBot+dzBot].z - Pontos.ponto[pos].z);
+    GLint db = abs(tamPista - abs(Pontos.ponto[pos].z) + abs(Pontos.ponto[posBot+dzBot].z)); // Se um ja reiniciou a pista e o outro nao
+    GLint distBotfromPlayer = da > db ? db : da;        // Distancia real entre o bot e o player
+    glPushMatrix();     // BOT
+        glTranslatef(Pontos.ponto[posBot+dzBot].x + dx, 0,Pontos.ponto[posBot+dzBot].z+pos-(Pontos.ponto[posBot+dzBot].z+pos > 0 ? tamPista : 0));
+        glTranslatef(0,0,-5);       // Calculo de quanto o bot vira nas curvas em função da distancia entre ele e o bot e se o player esta ou nao em curva
+        glRotatef(- ((int)(Pontos.ponto[posBot+dzBot].curve*1000) ? Pontos.ponto[posBot+dzBot].curve : Pontos.ponto[pos].curve) * 1200 * (distBotfromPlayer/35), 0, 1, 0);
+        glRotatef(Pontos.ponto[posBot+dzBot].curve * 2000, 0, 0, 1);
+        glTranslatef(0,0,+5);
+        glScalef(s_car, s_car, s_car);
+        DesenhaCarro(cor);
+    glPopMatrix();
+
+    if(Pontos.ponto[pos].curve == 0.0){
+        if( (pos > (posBot+dzBot-220) && pos < posBot+dzBot-140) && (              // estao na mesma posicao em z
+            (carPosX - 18 <= dx && carPosX >= dx) || // player do lado direito do bot
+            (carPosX + 18 >= dx && carPosX <= dx) )  // player do lado esquerdo do bot
+        )  
+        {
+            colidiu = true;
+            posQndoBateu = 0;
+            
+        }
+    }else if(Pontos.ponto[pos].curve > 0.0){
+        if( (pos > (posBot+dzBot-220) && pos < posBot+dzBot-140) && (              // estao na mesma posicao em z
+            (carPosX - 26 <= dx && carPosX >= dx) || // player do lado direito do bot
+            (carPosX + 10 >= dx && carPosX <= dx) )  // player do lado esquerdo do bot
+        )  
+        {
+            colidiu = true;
+            posQndoBateu = 0;
+            
+        }
+    }else if(Pontos.ponto[pos].curve < 0.0){
+        if( (pos > (posBot+dzBot-220) && pos < posBot+dzBot-140) && (              // estao na mesma posicao em z
+            (carPosX - 10 <= dx && carPosX >= dx) || // player do lado direito do bot
+            (carPosX + 26 >= dx && carPosX <= dx) )  // player do lado esquerdo do bot
+        )  
+        {
+            colidiu = true;
+            posQndoBateu = 0;
+            
+        }
+    }
+}
+
 void TimerFunc(int valor){
     int f = valor;
     if(colidiu){
@@ -30,6 +125,7 @@ void TimerFunc(int valor){
         }else{
             speed = 0.98 * speed > 8 ? 0.98 * speed : 2;
             pos = pos - 0.5;
+            posBot += 2;
             if(viraCarro > 0){
                 viraCarro = viraCarro * 0.90;
             }else if (viraCarro < 0){
@@ -88,78 +184,18 @@ void TimerFunc(int valor){
     //printf("posCarro: %lf \t tamPista: %d\n", carPosX, tamPista);
 
     // verifica se o carro está tocando alguma das bordas e desacelera
-    if(isTouchingRight() || isTouchingLeft())
-        speed = speed >= 3 ? speed - 0.08 : speed ;
+    if(isTouchingRight() || isTouchingLeft()){
+        pos -= (0.12 * speed);
+        posBot += 0.15 * speed;
+        speed -= 0.02;
+    }
 
     InitScreen();
     if(anima)
         glutTimerFunc(5, TimerFunc, f);
     glutPostRedisplay();
 }
-void DesenhaPista(){
-    Ponto_t *p2, *p1;
-    int n;
-    x= 0;
-    dx = 0;
-    // Pontos.ponto[posBot].bot = true;
-    for(n = pos; n < pos+2500; n++){
-        
-        p1 = &(Pontos.ponto[(n-1)%tamPista]);
-        p2 = &(Pontos.ponto[n%tamPista]);
-        x += dx;
-        dx += p2->curve;
-        p2->x = x;
-       
-        DesenhaSeg(p1->cor? grassColorA : grassColorB,  
-                    p1->x, p1->y-2, p1->z+pos-(n-1>=tamPista?tamPista:0), 
-                    p2->x, p2->y-2, p2->z+pos-(n  >=tamPista?tamPista:0), larPista*200);
-        DesenhaSeg(p1->cor? preto : branco,
-                    p1->x, p1->y-1, p1->z+pos-(n-1>=tamPista?tamPista:0), 
-                    p2->x, p2->y-1, p2->z+pos-(n  >=tamPista?tamPista:0), larPista*1.2);
-        DesenhaSeg(p1->cor? roadColorA: roadColorB,   
-                    p1->x, p1->y,   p1->z+pos-(n-1>=tamPista?tamPista:0), 
-                    p2->x, p2->y,   p2->z+pos-(n  >=tamPista?tamPista:0), larPista);
 
-        
-    }
-}
-
-//Mostra o logo do Enduro
-void Titulo1(){
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
-    glColor3f(1.0,1.0,1.0);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluOrtho2D(-1.0,1.0,-1.0,1.0);
-
-    MsgGde("Enduro", -.1,0);
-
-    glFlush();
-    glutSwapBuffers();
-    delay(2);
-    glutDisplayFunc(Titulo2);
-}
-//Mostra alguma outra coisa
-void Titulo2(){
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
-      
-    glColor3f(1.0,1.0,1.0);
-    	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluOrtho2D(-1.0,1.0,-1.0,1.0);
-    MsgGde("Grupo", -.1,0);
-
-    glFlush();
-    glutSwapBuffers();
-    delay(2);
-    glutDisplayFunc(Desenha);
-}
 void Desenha(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
     
@@ -169,10 +205,12 @@ void Desenha(){
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
+    float posicao[]={0.0, 50.0, -300.0, 1.0};
+    glLightfv(GL_LIGHT0, GL_POSITION, posicao);
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluOrtho2D(-1.0,1.0,-1.0,1.0);
-    Msg("Pressione 'p' para pausar animacao e 'P' para reiniciar",-.9,.9);
     Msg("Enduro", -.9,.9);
     InitScreen();
     // Pista
@@ -218,11 +256,12 @@ void Desenha(){
     if(!colidiu){
         if(botoes[0] && anima){
             pos += (0.12 * speed);
-            posBot += 0.05 * speed;
+            posBot += 0.01 * speed;
         }
         if((botoes[1] ) && anima){
             pos -= (0.12 * speed);
             posBot += 0.15 * speed;
+            speed -= 0.02;
         }
         if(botoes[2] && !isTouchingLeft()){ // impedir virar pra esquerda quando estiver fora da pista
             carPosX = carPosX >= -(larPista/2+30)? carPosX - 1.5 * speed/(15+(volta*2)): carPosX;

@@ -44,7 +44,8 @@ extern GLdouble x_0,    y_0,    z_0,
 // Game
 extern GLboolean anima, colidiu;
 extern GLint volta, contaCor, voltaAnt;
-GLint posQndoBateu;
+GLint posQndoBateu, voltaAnt2,contaCor2;
+GLfloat ambiente[5];
 
 // Pista
 Array Pontos;
