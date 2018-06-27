@@ -255,7 +255,10 @@ void DesenhaCarro(GLfloat *cor){
 
             //Dianteira
             glColor3fv(cor);
+<<<<<<< HEAD
             glNormal3f(0.0, 0.0, -1.0);
+=======
+>>>>>>> master
             glVertex3f(-8.5, 4.5, -40.0);  glVertex3f(8.5, 4.5, -40.0);
             glVertex3f(8.5, 9.6, -40.0);   glVertex3f(-8.5, 9.6, -40.0);
 
@@ -380,5 +383,8 @@ void DesenhaCarro(GLfloat *cor){
             glVertex3f(6.1, 4.2, 0.1); glVertex3f(6.3, 3.9, 0.1);
         glEnd();
     glPopMatrix();
+<<<<<<< HEAD
     glNormal3f(0.0, 1.0, 0.0);
+=======
+>>>>>>> master
 }

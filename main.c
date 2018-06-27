@@ -1,4 +1,5 @@
 #include "global.h"
+<<<<<<< HEAD
 
 
 //Mostra o logo do Enduro
@@ -36,8 +37,108 @@ void Titulo2(){
     glutSwapBuffers();
     delay(2);
     glutDisplayFunc(Desenha);
-}
+=======
 
+// Player
+
+
+// Bot
+
+
+void InitScreen(){
+    w_width = glutGet(GLUT_WINDOW_WIDTH);
+    w_height = glutGet(GLUT_WINDOW_HEIGHT);
+
+    glMatrixMode(GL_PROJECTION); //define que a matrix é a de projeção
+    glLoadIdentity(); //carrega a matrix de identidade
+    gluPerspective(theta, aspect, d_near, d_far);
+
+    glPushMatrix();
+        glMatrixMode(GL_MODELVIEW); //define que a matrix é a model view
+        glLoadIdentity(); //carrega a matrix de identidade
+        gluLookAt(x_0,   y_0,   z_0,
+                  x_ref, y_ref, z_ref,
+                  V_x,   V_y,   V_z);
+    glPopMatrix();
+>>>>>>> master
+}
+void TimerFunc(int valor){
+    int f = valor;
+    if(colidiu){
+        if(posQndoBateu > 100) {
+            colidiu = false;
+        }else{
+            speed = 0.98 * speed > 8 ? 0.98 * speed : 2;
+            pos = pos - 0.5;
+            if(viraCarro > 0){
+                viraCarro = viraCarro * 0.90;
+            }else if (viraCarro < 0){
+                viraCarro = viraCarro * 0.90;
+            }
+            posQndoBateu++;
+        }
+    }
+    else{
+        pos += speed ;
+    }
+    posBot += 0.8*speed;
+        
+    while(pos >= tamPista){
+        pos -= tamPista;
+        volta++;
+    }
+    while(pos < 0)            pos += tamPista;
+    while(posBot >= tamPista) posBot -= tamPista;
+    while(posBot < 0)         posBot += tamPista;
+    
+    //Controle do céu
+    if(volta != voltaAnt){
+        voltaAnt = volta;
+        contaCor = (contaCor+1) % 4;
+    }
+    if(contaCor == 3){
+        glClearColor(.0f, .0f, 1.0 - ((float)pos/(float)tamPista), .0f);
+    }
+    else if(contaCor == 2){
+        glClearColor(.0f, .0f, 1.0, .0f);
+    }
+    else if(contaCor == 1){
+        glClearColor(.0f, .0f, ((float)pos/(float)tamPista), .0f);
+    }
+    else{
+        glClearColor(.0f, .0f, 0, .0f);
+    }
+    //Controle de velocidade
+    // if((int)pos%tamPista == 0) volta++; //Cada volta no mapa tem tamPista posições.
+    if(speed<15+(volta*2)) speed += 0.005;//Aceleracao maxima 35, aumenta em 2 para cada volta.
+    if(speed<10) speed += 0.005;			//Aceleracao 0.2 quando abaixo de speed 20.
+    if(speed<5) speed += 0.005;			//Aceleracao 0.3 quando abaixo de speed 05.
+    
+    //Inércia nas curvas
+    if(Pontos.ponto[pos].curve > 0 ){ //Curva para a direita.
+        if(carPosX >= -(larPista/2+25)) 
+            carPosX = carPosX-1.3*speed/(15+(volta*2));	
+    }
+    if(Pontos.ponto[pos].curve < 0 ){ //Curva para a esquerda.
+        if(carPosX <= larPista/2+25) 
+            carPosX = carPosX+1.3*speed/(15+(volta*2));
+    }
+    
+    // debug (ignore)
+    //printf("posCarro: %lf \t tamPista: %d\n", carPosX, tamPista);
+
+    // verifica se o carro está tocando alguma das bordas e desacelera
+    if(isTouchingRight() || isTouchingLeft())
+        speed = speed >= 3 ? speed - 0.08 : speed ;
+
+<<<<<<< HEAD
+=======
+    InitScreen();
+    if(anima)
+        glutTimerFunc(5, TimerFunc, f);
+    glutPostRedisplay();
+}
+>>>>>>> master
 void DesenhaPista(){
     Ponto_t *p2, *p1;
     int n;
@@ -61,6 +162,7 @@ void DesenhaPista(){
         DesenhaSeg(p1->cor? roadColorA: roadColorB,   
                     p1->x, p1->y,   p1->z+pos-(n-1>=tamPista?tamPista:0), 
                     p2->x, p2->y,   p2->z+pos-(n  >=tamPista?tamPista:0), larPista);
+<<<<<<< HEAD
 
         
     }
@@ -194,6 +296,11 @@ void TimerFunc(int valor){
     if(anima)
         glutTimerFunc(5, TimerFunc, f);
     glutPostRedisplay();
+=======
+
+        
+    }
+>>>>>>> master
 }
 
 void Desenha(){
@@ -205,6 +312,7 @@ void Desenha(){
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
+<<<<<<< HEAD
     float posicao[]={0.0, 50.0, -300.0, 1.0};
     glLightfv(GL_LIGHT0, GL_POSITION, posicao);
 
@@ -212,6 +320,12 @@ void Desenha(){
     glLoadIdentity();
     gluOrtho2D(-1.0,1.0,-1.0,1.0);
     Msg("Enduro", -.9,.9);
+=======
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluOrtho2D(-1.0,1.0,-1.0,1.0);
+    Msg("Precione 'p' para pausar animacao e 'P' para reiniciar",-.9,.9);
+>>>>>>> master
     InitScreen();
     // Pista
     glPushMatrix();
@@ -256,12 +370,19 @@ void Desenha(){
     if(!colidiu){
         if(botoes[0] && anima){
             pos += (0.12 * speed);
+<<<<<<< HEAD
             posBot += 0.01 * speed;
+=======
+            posBot += 0.05 * speed;
+>>>>>>> master
         }
         if((botoes[1] ) && anima){
             pos -= (0.12 * speed);
             posBot += 0.15 * speed;
+<<<<<<< HEAD
             speed -= 0.02;
+=======
+>>>>>>> master
         }
         if(botoes[2] && !isTouchingLeft()){ // impedir virar pra esquerda quando estiver fora da pista
             carPosX = carPosX >= -(larPista/2+30)? carPosX - 1.5 * speed/(15+(volta*2)): carPosX;
@@ -314,6 +435,7 @@ int main(int argc, char *argv[]){
         ponto.y = 0;
         ponto.z = -i ;
         ponto.curve = 0;
+<<<<<<< HEAD
 
         //Cor
         if (c == 50){
@@ -322,6 +444,16 @@ int main(int argc, char *argv[]){
         }else c++;
         ponto.cor =   flagCor;
 
+=======
+
+        //Cor
+        if (c == 50){
+            c = 0;
+            flagCor = flagCor? false : true;
+        }else c++;
+        ponto.cor =   flagCor;
+
+>>>>>>> master
         // Curvas
         if( i > 1800 && i < 2800) ponto.curve = 0.001;
         if( i > 3800 && i < 4800) ponto.curve = -0.001;
