@@ -1,42 +1,5 @@
 #include "global.h"
 
-//Mostra o logo do Enduro
-void Titulo1(){
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
-    glColor3f(1.0,1.0,1.0);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluOrtho2D(-1.0,1.0,-1.0,1.0);
-
-    MsgGde("Enduro", -.1,0);
-
-    glFlush();
-    glutSwapBuffers();
-    delay(2);
-    glutDisplayFunc(Titulo2);
-}
-//Mostra alguma outra coisa
-void Titulo2(){
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
-      
-    glColor3f(1.0,1.0,1.0);
-    	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluOrtho2D(-1.0,1.0,-1.0,1.0);
-    MsgGde("Grupo", -.1,0);
-
-    glFlush();
-    glutSwapBuffers();
-    delay(2);
-    glutDisplayFunc(Desenha);
-}
-
 void TimerFunc(int valor){
     int f = valor;
     if(colidiu){
@@ -345,7 +308,7 @@ int main(int argc, char *argv[]){
         glutSpecialFunc(SpecialKeys);
         glutTimerFunc(0,TimerFunc,1);
         glutIdleFunc(IdleFunc);
-        glutDisplayFunc(Titulo1);
+        glutDisplayFunc(desenha_actvision);
         //glutDisplayFunc(Desenha);
         glClearColor(.0f, .0f, .0f, .0f); //define a cor de fundo
         glEnable(GL_DEPTH_TEST); //habilita o teste de profundidade

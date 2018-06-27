@@ -96,5 +96,5 @@ void DesenhaPista();
 void Desecelera();
 void DesenhaSeg(GLfloat *cor, float x1, float z1, float y1, float x2, float z2, float y2, float w2);
 void IdleFunc();
-
+void desenha_actvision();
 #endif
