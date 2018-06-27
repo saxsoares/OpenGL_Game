@@ -44,7 +44,8 @@ extern GLdouble x_0,    y_0,    z_0,
 // Game
 extern GLboolean anima, colidiu;
 extern GLint volta, contaCor, voltaAnt;
-GLint posQndoBateu;
+GLint posQndoBateu, voltaAnt2,contaCor2;
+GLfloat ambiente[5];
 
 // Pista
 Array Pontos;
@@ -72,6 +73,8 @@ void initArray(Array *a, size_t initialSize);
 void insertArray(Array *a, Ponto_t element);
 void freeArray(Array *a);
 void Msg(char *string, GLfloat x, GLfloat y);
+void MsgGde(char *string, GLfloat x, GLfloat y);
+void delay(float secs);
 void FitWindow(GLsizei w, GLsizei h);
 void InitScreen();
 void MovimentaMouse(int, int);
@@ -83,6 +86,8 @@ void Timer(int);
 void TimerFunc(int );
 void Reshape(int, int); 
 void Msg(char *, GLfloat , GLfloat );
+void Titulo1();
+void Titulo2();
 void Desenha();
 void DesenhaGrade();
 void DesenhaCarro(GLfloat *);

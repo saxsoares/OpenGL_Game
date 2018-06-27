@@ -1,5 +1,7 @@
 #include "global.h"
 #include <unistd.h>
+#include <time.h>
+
 GLfloat abobora[]={.99,.06,.75},     amarelo[]={1,1,0},     azul[]={0,0,1},      azulCeu[]={.53,.81,.98}, azulEsc[]={0,0,.55},
         azulMarinho[]={.07,.04,.56}, azulCiano[]={0,1,1},   branco[]={1,1,1},    cinza[]={.5,.5,.5},      cinzaClaro[]={.7,.7,.7},
         cinzaEsc[]={.66,.66,.66},    furchsia[]={1,0,1},    jambo[]={1,.27,0},  fuligem[]={.24,.17,.12}, laranja[]={1,.65,0},
@@ -53,12 +55,82 @@ void freeArray(Array *a) {
   a->used = a->size = 0;
 }
 
+void delay(float secs){
+	float end = clock()/CLOCKS_PER_SEC + secs;
+	while((clock()/CLOCKS_PER_SEC) < end);
+}
+
 void Msg(char *string, GLfloat x, GLfloat y){
         glRasterPos2f(x,y);
         while(*string)
              glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12,*string++);
 }
+void MsgGde(char *string, GLfloat x, GLfloat y){
+        glRasterPos2f(x,y);
+        while(*string)
+             glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,*string++);
+}
 
+
+void InitScreen(){
+    w_width = glutGet(GLUT_WINDOW_WIDTH);
+    w_height = glutGet(GLUT_WINDOW_HEIGHT);
+
+    glMatrixMode(GL_PROJECTION); //define que a matrix é a de projeção
+    glLoadIdentity(); //carrega a matrix de identidade
+    gluPerspective(theta, aspect, d_near, d_far);
+
+    glPushMatrix();
+        glMatrixMode(GL_MODELVIEW); //define que a matrix é a model view
+        glLoadIdentity(); //carrega a matrix de identidade
+        gluLookAt(x_0,   y_0,   z_0,
+                  x_ref, y_ref, z_ref,
+                  V_x,   V_y,   V_z);
+    glPopMatrix();
+
+    //Iluminacao
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_COLOR_MATERIAL);
+
+    float difusao[]={1.0, 1.0, 1.0, 1.0};
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, difusao);
+
+    //Controle do ambiente
+    if(volta != voltaAnt2){
+        voltaAnt2 = volta;
+        contaCor2 = (contaCor2+1) % 4;
+    }
+    if(contaCor2 == 3){
+        ambiente[0] = 1.0 - ((float)pos/(float)tamPista) > 0.3 ? 1.0 - ((float)pos/(float)tamPista) : 0.3;
+        ambiente[1] = 1.0 - ((float)pos/(float)tamPista) > 0.3 ? 1.0 - ((float)pos/(float)tamPista) : 0.3;
+        ambiente[2] = 1.0 - ((float)pos/(float)tamPista) > 0.3 ? 1.0 - ((float)pos/(float)tamPista) : 0.3;
+        printf("contaCor2==3: %f\n", ambiente[1]);
+        ambiente[4] = 1.0;
+    }
+    else if(contaCor2 == 2){
+        ambiente[0] = 1.0;
+        ambiente[1] = 1.0;
+        ambiente[2] = 1.0;
+        printf("contaCor2==2: %f\n", ambiente[1]);
+        ambiente[4] = 1.0;
+    }
+    else if(contaCor2 == 1){
+        ambiente[0] = ((float)pos/(float)tamPista) > 0.3 ? ((float)pos/(float)tamPista) : 0.3;
+        ambiente[1] = ((float)pos/(float)tamPista) > 0.3 ? ((float)pos/(float)tamPista) : 0.3;
+        ambiente[2] = ((float)pos/(float)tamPista) > 0.3 ? ((float)pos/(float)tamPista) : 0.3;
+        printf("contaCor2==1: %f\n", ambiente[1]);
+        ambiente[4] = 1.0;
+    }
+    else{
+        ambiente[0] = 0.3;
+        ambiente[1] = 0.3;
+        ambiente[2] = 0.3;
+        printf("contaCor2==0: %f\n", ambiente[1]);
+        ambiente[4] = 1.0;
+    }
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambiente);
+}
 void FitWindow(GLsizei w, GLsizei h){
      if (w >= h)
         glutReshapeWindow(h, h);
@@ -189,54 +261,3 @@ void SpecialKeys (int key, int x, int y){
     printf("posBot: %d\n", posBot);
 }
  
-void DesenhaBots(GLfloat *cor, GLint dzBot, GLint dx){
-    // Verifica se posBot+dzBot esta dentro do range (0-tamPista)
-    if((posBot + dzBot) > tamPista){
-        dzBot = -(tamPista - dzBot);
-    }
-    GLint da = abs(Pontos.ponto[posBot+dzBot].z - Pontos.ponto[pos].z);
-    GLint db = abs(tamPista - abs(Pontos.ponto[pos].z) + abs(Pontos.ponto[posBot+dzBot].z)); // Se um ja reiniciou a pista e o outro nao
-    GLint distBotfromPlayer = da > db ? db : da;        // Distancia real entre o bot e o player
-    glPushMatrix();     // BOT
-        glTranslatef(Pontos.ponto[posBot+dzBot].x + dx, 0,Pontos.ponto[posBot+dzBot].z+pos-(Pontos.ponto[posBot+dzBot].z+pos > 0 ? tamPista : 0));
-        glTranslatef(0,0,-5);       // Calculo de quanto o bot vira nas curvas em função da distancia entre ele e o bot e se o player esta ou nao em curva
-        glRotatef(- ((int)(Pontos.ponto[posBot+dzBot].curve*1000) ? Pontos.ponto[posBot+dzBot].curve : Pontos.ponto[pos].curve) * 1200 * (distBotfromPlayer/35), 0, 1, 0);
-        glRotatef(Pontos.ponto[posBot+dzBot].curve * 2000, 0, 0, 1);
-        glTranslatef(0,0,+5);
-        glScalef(s_car, s_car, s_car);
-        DesenhaCarro(cor);
-    glPopMatrix();
-
-    if(Pontos.ponto[pos].curve == 0.0){
-        if( (pos > (posBot+dzBot-220) && pos < posBot+dzBot-140) && (              // estao na mesma posicao em z
-            (carPosX - 18 <= dx && carPosX >= dx) || // player do lado direito do bot
-            (carPosX + 18 >= dx && carPosX <= dx) )  // player do lado esquerdo do bot
-        )  
-        {
-            colidiu = true;
-            posQndoBateu = 0;
-            
-        }
-    }else if(Pontos.ponto[pos].curve > 0.0){
-        if( (pos > (posBot+dzBot-220) && pos < posBot+dzBot-140) && (              // estao na mesma posicao em z
-            (carPosX - 26 <= dx && carPosX >= dx) || // player do lado direito do bot
-            (carPosX + 10 >= dx && carPosX <= dx) )  // player do lado esquerdo do bot
-        )  
-        {
-            colidiu = true;
-            posQndoBateu = 0;
-            
-        }
-    }else if(Pontos.ponto[pos].curve < 0.0){
-        if( (pos > (posBot+dzBot-220) && pos < posBot+dzBot-140) && (              // estao na mesma posicao em z
-            (carPosX - 10 <= dx && carPosX >= dx) || // player do lado direito do bot
-            (carPosX + 26 >= dx && carPosX <= dx) )  // player do lado esquerdo do bot
-        )  
-        {
-            colidiu = true;
-            posQndoBateu = 0;
-            
-        }
-    }
-}
-
