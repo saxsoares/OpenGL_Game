@@ -46,8 +46,8 @@ extern GLboolean anima, colidiu;
 extern GLint volta, contaCor, voltaAnt;
 GLint posQndoBateu, voltaAnt2,contaCor2;
 GLfloat ambiente[5], posicao[4];
-extern int pontuacao;
-extern char pontuacaoStr[12];
+extern GLfloat pontuacao;
+extern GLchar pontuacaoStr[12];
 
 // Pista
 Array Pontos;

@@ -3,6 +3,10 @@
 void DesenhaCarro(GLfloat *cor){
     glPushMatrix();
         //Roda dianteira esquerda
+        glPushMatrix();
+        glTranslatef(-7.0,0.0,-33.0);    
+        glRotatef(viraCarro - Pontos.ponto[pos].curve * 2000, 0, 1, 0);//Roda dianteira direita
+        glTranslatef(7.0,0.0,33.0);    
         glColor3f(0.1, 0.1, 0.1);
         glBegin(GL_QUADS);
             glVertex3f(-8.5, 0.0, -31.8); glVertex3f(-5.5, 0.0, -31.8);
@@ -29,6 +33,7 @@ void DesenhaCarro(GLfloat *cor){
             glVertex3f(-8.5, 1.7, -30.1); glVertex3f(-5.5, 1.7, -30.1);
             glVertex3f(-5.5, 0.0, -31.8); glVertex3f(-8.5, 0.0, -31.8);
         glEnd();
+        
             //"Tampa" esquerda
             glBegin(GL_POLYGON);
                 glVertex3f(-8.5, 0.0, -31.8); glVertex3f(-8.5, 0.0, -34.2);
@@ -36,9 +41,13 @@ void DesenhaCarro(GLfloat *cor){
                 glVertex3f(-8.5, 5.9, -34.2); glVertex3f(-8.5, 5.9, -31.8);
                 glVertex3f(-8.5, 4.2, -30.1); glVertex3f(-8.5, 1.7, -30.1);
             glEnd();
-
+        glPopMatrix();
         //Roda dianteira direita
         glColor3f(0.1, 0.1, 0.1);
+        glPushMatrix();
+        glTranslatef(7.0,0.0,-33.0);    
+        glRotatef(viraCarro - Pontos.ponto[pos].curve * 2000, 0, 1, 0);//Roda dianteira direita
+        glTranslatef(-7.0,0.0,33.0);    
         glBegin(GL_QUADS);
             glVertex3f(5.5, 0.0, -31.8); glVertex3f(8.5, 0.0, -31.8);
             glVertex3f(8.5, 0.0, -34.2); glVertex3f(5.5, 0.0, -34.2);
@@ -71,7 +80,7 @@ void DesenhaCarro(GLfloat *cor){
                 glVertex3f(8.5, 5.9, -34.2); glVertex3f(8.5, 5.9, -31.8);
                 glVertex3f(8.5, 4.2, -30.1); glVertex3f(8.5, 1.7, -30.1);
             glEnd();
-
+        glPopMatrix();
         //Roda traseira esquerda
         glColor3f(0.1, 0.1, 0.1);
         glBegin(GL_QUADS);

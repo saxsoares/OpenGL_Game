@@ -8,6 +8,7 @@ void TimerFunc(int valor){
         }else{
             speed = 0.98 * speed > 8 ? 0.98 * speed : 2;
             pos = pos - 0.5;
+            pontuacao -= 0.2;
             posBot += 2;
             if(viraCarro > 0){
                 viraCarro = viraCarro * 0.90;
@@ -24,10 +25,10 @@ void TimerFunc(int valor){
 
     if(pontuacao < 0){
         pontuacao = 0;
-    }else{
-        pontuacao += 10;
+    }else if(!isTouchingRight() && !isTouchingLeft()){
+        pontuacao += 0.2;
     }
-    sprintf(pontuacaoStr, "%d", pontuacao);
+    sprintf(pontuacaoStr, "%.0f", pontuacao);
         
     while(pos >= tamPista){
         pos -= tamPista;
@@ -73,7 +74,7 @@ void TimerFunc(int valor){
         pos -= (0.12 * speed);
         posBot += 0.15 * speed;
         speed -= 0.02;
-        pontuacao -= 30;
+        pontuacao -= 1;
     }
 
     InitScreen();
@@ -136,7 +137,7 @@ void DesenhaBots(GLfloat *cor, GLint dzBot, GLint dx){
         {
             colidiu = true;
             posQndoBateu = 0;
-            pontuacao -= 3000;
+            pontuacao -= 3;
         }
     }else if(Pontos.ponto[pos].curve > 0.0){
         if( (pos > (posBot+dzBot-220) && pos < posBot+dzBot-140) && (              // estao na mesma posicao em z
@@ -146,7 +147,7 @@ void DesenhaBots(GLfloat *cor, GLint dzBot, GLint dx){
         {
             colidiu = true;
             posQndoBateu = 0;
-            pontuacao -= 3000;
+            pontuacao -= 3;
         }
     }else if(Pontos.ponto[pos].curve < 0.0){
         if( (pos > (posBot+dzBot-220) && pos < posBot+dzBot-140) && (              // estao na mesma posicao em z
@@ -156,7 +157,7 @@ void DesenhaBots(GLfloat *cor, GLint dzBot, GLint dx){
         {
             colidiu = true;
             posQndoBateu = 0;
-            pontuacao -= 3000;
+            pontuacao -= 3;
         }
     }
 }

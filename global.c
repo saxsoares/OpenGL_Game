@@ -19,8 +19,9 @@ GLdouble x_0=0,     y_0=40.0,   z_0= -100,
 
 // Game
 GLboolean anima = false, colidiu = false;
-GLint contaCor = 0, voltaAnt = 0, pontuacao = 0;
-char pontuacaoStr[12];
+GLint contaCor = 0, voltaAnt = 0; 
+GLfloat pontuacao = 0;
+GLchar pontuacaoStr[12];
 
 
 // Pista
