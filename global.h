@@ -75,7 +75,7 @@ void initArray(Array *a, size_t initialSize);
 void insertArray(Array *a, Ponto_t element);
 void freeArray(Array *a);
 void Msg(char *string, GLfloat x, GLfloat y);
-void MsgGde(char *string, GLfloat x, GLfloat y);
+void MsgGde(char *string, GLfloat x, GLfloat y, GLfloat *cor);
 void delay(float secs);
 void FitWindow(GLsizei w, GLsizei h);
 void InitScreen();

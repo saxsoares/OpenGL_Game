@@ -67,7 +67,8 @@ void Msg(char *string, GLfloat x, GLfloat y){
         while(*string)
              glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12,*string++);
 }
-void MsgGde(char *string, GLfloat x, GLfloat y){
+void MsgGde(char *string, GLfloat x, GLfloat y, GLfloat *cor){
+        glColor3fv(cor);
         glRasterPos2f(x,y);
         while(*string)
              glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,*string++);
@@ -523,7 +524,7 @@ void Titulo1(){
     glLoadIdentity();
     gluOrtho2D(-1.0,1.0,-1.0,1.0);
 
-    MsgGde("Enduro", -.1,0);
+    MsgGde("Enduro", -.1,0, branco);
 
     glFlush();
     glutSwapBuffers();
@@ -541,7 +542,7 @@ void Titulo2(){
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluOrtho2D(-1.0,1.0,-1.0,1.0);
-    MsgGde("Grupo", -.1,0);
+    MsgGde("Grupo", -.1,0, branco);
 
     glFlush();
     glutSwapBuffers();

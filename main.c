@@ -8,7 +8,7 @@ void TimerFunc(int valor){
         }else{
             speed = 0.98 * speed > 8 ? 0.98 * speed : 2;
             pos = pos - 0.5;
-            pontuacao -= 0.2;
+            pontuacao -= 1;
             posBot += 2;
             if(viraCarro > 0){
                 viraCarro = viraCarro * 0.90;
@@ -171,7 +171,7 @@ void Desenha(){
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluOrtho2D(-1.0,1.0,-1.0,1.0);
-    MsgGde(pontuacaoStr, -.9,.9);
+    MsgGde(pontuacaoStr, -.9,.9, branco);
     InitScreen();
     // Pista
     glPushMatrix();
@@ -260,7 +260,7 @@ int main(int argc, char *argv[]){
     sw = glutGet(GLUT_SCREEN_WIDTH);
     sh = glutGet(GLUT_SCREEN_HEIGHT);
     winPosX = (sw-sh)/2; winPosY = 0;
-    posicao[0] = 0.0; posicao[1] =  22.0; posicao[2] = -30.0; posicao[3] = 1.0;
+    posicao[0] = 0.0; posicao[1] =  22.0; posicao[2] = -40.0; posicao[3] = 1.0;
     glutInitWindowPosition(winPosX, winPosY);
     glutInitWindowSize(sh, sh);
     glutSetKeyRepeat(1);
