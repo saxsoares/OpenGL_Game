@@ -45,7 +45,7 @@ extern GLdouble x_0,    y_0,    z_0,
 extern GLboolean anima, colidiu;
 extern GLint volta, contaCor, voltaAnt;
 GLint posQndoBateu, voltaAnt2,contaCor2;
-GLfloat ambiente[5];
+GLfloat ambiente[5], posicao[4];
 
 // Pista
 Array Pontos;
