@@ -19,7 +19,8 @@ GLdouble x_0=0,     y_0=40.0,   z_0= -100,
 
 // Game
 GLboolean anima = false, colidiu = false;
-GLint contaCor = 0, voltaAnt = 0;
+GLint contaCor = 0, voltaAnt = 0, pontuacao = 0;
+char pontuacaoStr[12];
 
 
 // Pista
@@ -37,22 +38,22 @@ GLfloat *corBot[] = {amarelo, verde, azul, rosa};
 GLint teste = 0;
 
 void initArray(Array *a, size_t initialSize) {
-  a->ponto = (Ponto_t *)calloc(initialSize , sizeof(Ponto_t));
-  a->used = 0;
-  a->size = initialSize;
+    a->ponto = (Ponto_t *)calloc(initialSize , sizeof(Ponto_t));
+    a->used = 0;
+    a->size = initialSize;
 }
 void insertArray(Array *a, Ponto_t element) {
-  if (a->used == a->size) {
-    a->size *= 2;
-    a->ponto = (Ponto_t *)realloc(a->ponto, a->size * sizeof(Ponto_t));
-  }
-  a->ponto[a->used++] = element;
+    if (a->used == a->size) {
+        a->size *= 2;
+        a->ponto = (Ponto_t *)realloc(a->ponto, a->size * sizeof(Ponto_t));
+    }
+    a->ponto[a->used++] = element;
 }
 
 void freeArray(Array *a) {
-  free(a->ponto);
-  a->ponto = NULL;
-  a->used = a->size = 0;
+    free(a->ponto);
+    a->ponto = NULL;
+    a->used = a->size = 0;
 }
 
 void delay(float secs){
@@ -132,7 +133,7 @@ void InitScreen(){
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambiente);
 }
 void FitWindow(GLsizei w, GLsizei h){
-     if (w >= h)
+    if (w >= h)
         glutReshapeWindow(h, h);
     else
         glutReshapeWindow(w, w);
@@ -220,7 +221,7 @@ void Keyboard (unsigned char key, int x, int y){
 
         default: break;
     }
-     InitScreen();
+    InitScreen();
 }
 
 void UpKeyboard (unsigned char key, int x, int y){
@@ -260,4 +261,4 @@ void SpecialKeys (int key, int x, int y){
     }
     printf("posBot: %d\n", posBot);
 }
- 
+

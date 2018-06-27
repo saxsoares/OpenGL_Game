@@ -21,7 +21,7 @@ void Titulo1(){
 //Mostra alguma outra coisa
 void Titulo2(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
-      
+
     glColor3f(1.0,1.0,1.0);
     	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -58,6 +58,13 @@ void TimerFunc(int valor){
         pos += speed ;
     }
     posBot += 0.8*speed;
+
+    if(pontuacao < 0){
+        pontuacao = 0;
+    }else{
+        pontuacao += 10;
+    }
+    sprintf(pontuacaoStr, "%d", pontuacao);
         
     while(pos >= tamPista){
         pos -= tamPista;
@@ -66,7 +73,6 @@ void TimerFunc(int valor){
     while(pos < 0)            pos += tamPista;
     while(posBot >= tamPista) posBot -= tamPista;
     while(posBot < 0)         posBot += tamPista;
-  
     //Controle do céu
     if(volta != voltaAnt){
         voltaAnt = volta;
@@ -96,18 +102,15 @@ void TimerFunc(int valor){
             carPosX = carPosX-1.3*speed/(15+(volta*2));	
     }
     if(Pontos.ponto[pos].curve < 0 ){ //Curva para a esquerda.
-        if(carPosX <= larPista/2+25) 
+        if(carPosX <= larPista/2+25)
             carPosX = carPosX+1.3*speed/(15+(volta*2));
     }
-    
-    // debug (ignore)
-    //printf("posCarro: %lf \t tamPista: %d\n", carPosX, tamPista);
-
     // verifica se o carro está tocando alguma das bordas e desacelera
     if(isTouchingRight() || isTouchingLeft()){
         pos -= (0.12 * speed);
         posBot += 0.15 * speed;
         speed -= 0.02;
+        pontuacao -= 30;
     }
 
     InitScreen();
@@ -129,7 +132,7 @@ void DesenhaPista(){
         x += dx;
         dx += p2->curve;
         p2->x = x;
-       
+
         DesenhaSeg(p1->cor? grassColorA : grassColorB,  
                     p1->x, p1->y-2, p1->z+pos-(n-1>=tamPista?tamPista:0), 
                     p2->x, p2->y-2, p2->z+pos-(n  >=tamPista?tamPista:0), larPista*200);
@@ -170,7 +173,7 @@ void DesenhaBots(GLfloat *cor, GLint dzBot, GLint dx){
         {
             colidiu = true;
             posQndoBateu = 0;
-            
+            pontuacao -= 3000;
         }
     }else if(Pontos.ponto[pos].curve > 0.0){
         if( (pos > (posBot+dzBot-220) && pos < posBot+dzBot-140) && (              // estao na mesma posicao em z
@@ -180,7 +183,7 @@ void DesenhaBots(GLfloat *cor, GLint dzBot, GLint dx){
         {
             colidiu = true;
             posQndoBateu = 0;
-            
+            pontuacao -= 3000;
         }
     }else if(Pontos.ponto[pos].curve < 0.0){
         if( (pos > (posBot+dzBot-220) && pos < posBot+dzBot-140) && (              // estao na mesma posicao em z
@@ -190,34 +193,26 @@ void DesenhaBots(GLfloat *cor, GLint dzBot, GLint dx){
         {
             colidiu = true;
             posQndoBateu = 0;
-            
+            pontuacao -= 3000;
         }
     }
 }
 
-
-
 void Desenha(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
-    
-    
     glColor3f(1.0,1.0,1.0);
     
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-
-    
-
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluOrtho2D(-1.0,1.0,-1.0,1.0);
-    Msg("Enduro", -.9,.9);
+    MsgGde(pontuacaoStr, -.9,.9);
     InitScreen();
     // Pista
     glPushMatrix();
         DesenhaPista();
     glPopMatrix();
-
     // Player
     glPushMatrix();
         glTranslatef(carPosX, 0,  -180);
@@ -252,7 +247,6 @@ void Desenha(){
         glPopMatrix();
     }
     //  DesenhaBots(amarelo, 0, 0);
-
     // Verifica Teclas:
     if(!colidiu){
         if(botoes[0] && anima){
