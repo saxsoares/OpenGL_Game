@@ -90,7 +90,7 @@ void InitScreen(){
                   x_ref, y_ref, z_ref,
                   V_x,   V_y,   V_z);
     glPopMatrix();
-
+    glLightfv(GL_LIGHT1, GL_AMBIENT, ambiente);
   
     //Controle do ambiente
     if(volta != voltaAnt2){
@@ -98,9 +98,9 @@ void InitScreen(){
         contaCor2 = (contaCor2+1) % 4;
     }
     if(contaCor2 == 3){
-        ambiente[0] = 1.0 - ((float)pos/(float)tamPista) > 0.0 ? 1.0 - ((float)pos/(float)tamPista) : 0;
-        ambiente[1] = 1.0 - ((float)pos/(float)tamPista) > 0.0 ? 1.0 - ((float)pos/(float)tamPista) : 0;
-        ambiente[2] = 1.0 - ((float)pos/(float)tamPista) > 0.0 ? 1.0 - ((float)pos/(float)tamPista) : 0;
+        ambiente[0] = 1.0 - ((float)pos/(float)tamPista) >= 0.0 ? 1.0 - ((float)pos/(float)tamPista) : 0.0;
+        ambiente[1] = 1.0 - ((float)pos/(float)tamPista) >= 0.0 ? 1.0 - ((float)pos/(float)tamPista) : 0.0;
+        ambiente[2] = 1.0 - ((float)pos/(float)tamPista) >= 0.0 ? 1.0 - ((float)pos/(float)tamPista) : 0.0;
         ambiente[4] = 1.0;
     }
     else if(contaCor2 == 2){
@@ -110,9 +110,9 @@ void InitScreen(){
         ambiente[4] = 1.0;
     }
     else if(contaCor2 == 1){
-        ambiente[0] = ((float)pos/(float)tamPista) > 0.0 ? ((float)pos/(float)tamPista) : 0.0;
-        ambiente[1] = ((float)pos/(float)tamPista) > 0.0 ? ((float)pos/(float)tamPista) : 0.0;
-        ambiente[2] = ((float)pos/(float)tamPista) > 0.0 ? ((float)pos/(float)tamPista) : 0.0;
+        ambiente[0] = ((float)pos/(float)tamPista) >= 0.0 ? ((float)pos/(float)tamPista) : 0.0;
+        ambiente[1] = ((float)pos/(float)tamPista) >= 0.0 ? ((float)pos/(float)tamPista) : 0.0;
+        ambiente[2] = ((float)pos/(float)tamPista) >= 0.0 ? ((float)pos/(float)tamPista) : 0.0;
         ambiente[4] = 1.0;
     }
     else{
@@ -121,7 +121,7 @@ void InitScreen(){
         ambiente[2] = 0.0;
         ambiente[4] = 1.0;
     }
-    glLightfv(GL_LIGHT1, GL_AMBIENT, ambiente);
+    // printf("contador: %d  ambiente[0]: %.3f\n", contaCor2, ambiente[0]);
 }
 void FitWindow(GLsizei w, GLsizei h){
     if (w >= h)
@@ -252,263 +252,266 @@ void SpecialKeys (int key, int x, int y){
     }
     printf("posBot: %d\n", posBot);
 }
- 
+GLfloat posAct = 0.0;
 void desenha_actvision () {
+    posAct += 0.001;
 
-   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
     glColor3f(1.0,1.0,1.0);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluOrtho2D(-1.0,1.0,-1.0,1.0);
 
-  glPushMatrix();
-  glScalef(0.35,0.35,0.35);
-  glColor3f(1.00, 0.75, 0.25);
-  //  E
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-	glBegin(GL_QUADS);
-    //glTranslatef(-3.0,-3.0,0.0);
-		//Arco-iris
-    glColor3f(255, 0.0, 0.0);
-		glVertex2f(0.00, 2.01); glVertex2f(0.00, 2.21);
-		glVertex2f(1.00, 2.21);	glVertex2f(1.00, 2.01);
-  glEnd();
-  glPopMatrix();
+    glPushMatrix();
+        glTranslatef(posAct,0.0,0.0);
+        glScalef(0.35,0.35,0.35);
+        glColor3f(1.00, 0.75, 0.25);
+        //  E
+        glPushMatrix();
+            glTranslatef(-3,-3.0,0.0);
+            glBegin(GL_QUADS);
+                //glTranslatef(-3.0,-3.0,0.0);
+                //Arco-iris
+                glColor3f(255, 0.0, 0.0);
+                glVertex2f(0.00, 2.00); glVertex2f(0.00, 2.20);
+                glVertex2f(1.00, 2.20);	glVertex2f(1.00, 2.00);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-    glColor3f(1, 0.5, 0);
-		glVertex2f(0.00, 2.22);	glVertex2f(0.00, 2.37);
-		glVertex2f(1.00, 2.37);	glVertex2f(1.00, 2.21);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                glColor3f(1, 0.5, 0);
+                glVertex2f(0.00, 2.20);	glVertex2f(0.00, 2.39);
+                glVertex2f(1.00, 2.39);	glVertex2f(1.00, 2.20);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-  	glColor3f(255, 100, 0.0);
-		glVertex2f(0.00, 2.38);	glVertex2f(0.00, 2.57);
-		glVertex2f(1.00, 2.57);	glVertex2f(1.00, 2.38);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                glColor3f(255, 100, 0.0);
+                glVertex2f(0.00, 2.39);	glVertex2f(0.00, 2.58);
+                glVertex2f(1.00, 2.58);	glVertex2f(1.00, 2.39);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-    glColor3f(0, 255, 0.0);
-		glVertex2f(0.00, 2.58);	glVertex2f(0.00, 2.77);
-		glVertex2f(1.00, 2.77);	glVertex2f(1.00, 2.58);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                glColor3f(0, 255, 0.0);
+                glVertex2f(0.00, 2.58);	glVertex2f(0.00, 2.77);
+                glVertex2f(1.00, 2.77);	glVertex2f(1.00, 2.58);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-    glColor3f(0.0, 0.0, 255);
-		glVertex2f(0.00, 2.78);	glVertex2f(0.00, 2.96);
-		glVertex2f(1.00, 2.97);	glVertex2f(1.00, 2.77);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                glColor3f(0.0, 0.0, 255);
+                glVertex2f(0.00, 2.77);	glVertex2f(0.00, 2.97);
+                glVertex2f(1.00, 2.97);	glVertex2f(1.00, 2.77);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-    glColor3f(120, 0.0, 255);
-		glVertex2f(0.00, 2.97);	glVertex2f(0.00, 3.17);
-		glVertex2f(1.00, 3.17);	glVertex2f(1.00, 2.96);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                glColor3f(120, 0.0, 255);
+                glVertex2f(0.00, 2.97);	glVertex2f(0.00, 3.17);
+                glVertex2f(1.00, 3.17);	glVertex2f(1.00, 2.97);
+            glEnd();
+        glPopMatrix();
 
-  glColor3f(1.00, 1, 1);
-		//Inicio das letras
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-		//A
-		glVertex2f(1.00, 2.01);	glVertex2f(1.00, 3.17);
-		glVertex2f(1.19, 3.17);	glVertex2f(1.19, 2.01);
-  glEnd();
-  glPopMatrix();
+        glColor3f(1.00, 1, 1);
+        //Inicio das letras
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+            //A
+            glVertex2f(1.00, 2.00);	glVertex2f(1.00, 3.17);
+            glVertex2f(1.19, 3.17);	glVertex2f(1.19, 2.00);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-		glVertex2f(0.99, 3.18);	glVertex2f(1.18, 3.17);
-		glVertex2f(1.68, 2.01);	glVertex2f(1.50, 2.01);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                glVertex2f(1.0, 3.18);	glVertex2f(1.18, 3.18);
+                glVertex2f(1.68, 2.00);	glVertex2f(1.50, 2.00);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-		glVertex2f(1.20, 2.39);	glVertex2f(1.32, 2.39);
-		glVertex2f(1.39, 2.27);	glVertex2f(1.20, 2.27);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                glVertex2f(1.20, 2.39);	glVertex2f(1.32, 2.39);
+                glVertex2f(1.39, 2.27);	glVertex2f(1.20, 2.27);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-		//C
-		glVertex2f(2.00, 2.01);	glVertex2f(1.59, 2.55);
-		glVertex2f(1.59, 2.26);	glVertex2f(1.68, 2.01);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                //C
+                glVertex2f(2.00, 2.00);	glVertex2f(1.60, 2.55);
+                glVertex2f(1.60, 2.26);	glVertex2f(1.68, 2.00);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-		glVertex2f(1.58, 2.55);	glVertex2f(1.69, 2.74);
-		glVertex2f(2.00, 2.74);	glVertex2f(1.58, 2.26);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                glVertex2f(1.60, 2.55);	glVertex2f(1.68, 2.74);
+                glVertex2f(2.00, 2.74);	glVertex2f(1.60, 2.26);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-		//T
-		glVertex2f(2.03, 2.01);	glVertex2f(2.15, 2.01);
-		glVertex2f(2.15, 2.86);	glVertex2f(2.03, 2.86);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                //T
+                glVertex2f(2.03, 2.00);	glVertex2f(2.15, 2.00);
+                glVertex2f(2.15, 2.86);	glVertex2f(2.03, 2.86);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-		glVertex2f(2.67, 2.86);	glVertex2f(1.48, 2.85);
-		glVertex2f(1.48, 3.01);	glVertex2f(2.66, 3.01);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                glVertex2f(2.66, 2.86);	glVertex2f(1.50, 2.86);
+                glVertex2f(1.50, 3.00);	glVertex2f(2.66, 3.00);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-		//V
-		glVertex2f(2.23, 2.01);	glVertex2f(2.24, 2.49);
-		glVertex2f(2.40, 2.49);	glVertex2f(2.39, 2.01);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                //V
+                glVertex2f(2.24, 2.00);	glVertex2f(2.24, 2.50);
+                glVertex2f(2.40, 2.50);	glVertex2f(2.40, 2.00);
+            glEnd();
+        glPopMatrix();
+        //I
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                glVertex2f(2.35, 2.85);	glVertex2f(2.76, 2.00);
+                glVertex2f(3.13, 2.85);	glVertex2f(2.93, 2.85);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-		glVertex2f(2.35, 2.85);	glVertex2f(2.76, 1.99);
-		glVertex2f(3.13, 2.85);	glVertex2f(2.93, 2.85);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                glVertex2f(3.05, 2.47);	glVertex2f(3.05, 2.00);
+                glVertex2f(3.20, 2.00);	glVertex2f(3.20, 2.47);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-		glVertex2f(3.05, 2.46);	glVertex2f(3.05, 2.00);
-		glVertex2f(3.19, 1.99);	glVertex2f(3.19, 2.47);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                glVertex2f(3.86, 2.58);	glVertex2f(3.86, 2.77);
+                glVertex2f(3.40, 2.77);	glVertex2f(3.25, 2.57);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-		glVertex2f(3.86, 2.58);	glVertex2f(3.86, 2.77);
-		glVertex2f(3.39, 2.76);	glVertex2f(3.25, 2.57);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                glVertex2f(3.28, 2.20);	glVertex2f(3.28, 2.00);
+                glVertex2f(3.72, 2.00);	glVertex2f(3.85, 2.20);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-		glVertex2f(3.28, 2.20);	glVertex2f(3.28, 2.01);
-		glVertex2f(3.72, 2.01);	glVertex2f(3.85, 2.20);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                glVertex2f(3.25, 2.57);	glVertex2f(3.39, 2.77);
+                glVertex2f(3.85, 2.20);	glVertex2f(3.70, 2.02);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-		glVertex2f(3.25, 2.57);	glVertex2f(3.39, 2.77);
-		glVertex2f(3.85, 2.20);	glVertex2f(3.71, 2.02);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                glVertex2f(3.93, 2.00);	glVertex2f(3.93, 2.63);
+                glVertex2f(4.10, 2.63);	glVertex2f(4.10, 2.00);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-		glVertex2f(3.93, 2.01);	glVertex2f(3.93, 2.63);
-		glVertex2f(4.11, 2.63);	glVertex2f(4.10, 2.01);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                glVertex2f(4.20, 2.63);	glVertex2f(4.27, 2.77);
+                glVertex2f(4.74, 2.77);	glVertex2f(4.80, 2.63);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-		glVertex2f(4.20, 2.63);	glVertex2f(4.27, 2.77);
-		glVertex2f(4.74, 2.77);	glVertex2f(4.81, 2.64);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                glVertex2f(4.74, 2.77);	glVertex2f(4.80, 2.64);
+                glVertex2f(4.80, 2.17);	glVertex2f(4.74, 2.08);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-		glVertex2f(4.73, 2.77);	glVertex2f(4.81, 2.64);
-		glVertex2f(4.81, 2.17);	glVertex2f(4.73, 2.08);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                glVertex2f(4.27, 2.77);	glVertex2f(4.20, 2.63);
+                glVertex2f(4.20, 2.18);	glVertex2f(4.27, 2.04);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-		glVertex2f(4.27, 2.77);	glVertex2f(4.20, 2.63);
-		glVertex2f(4.20, 2.18);	glVertex2f(4.27, 2.04);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                glVertex2f(4.80, 2.18);	glVertex2f(4.74, 2.04);
+                glVertex2f(4.27, 2.04);	glVertex2f(4.24, 2.18);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-		glVertex2f(4.81, 2.18);	glVertex2f(4.75, 2.04);
-		glVertex2f(4.27, 2.04);	glVertex2f(4.24, 2.18);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                glVertex2f(4.93, 2.02);	glVertex2f(4.93, 2.74);
+                glVertex2f(5.06, 2.74);	glVertex2f(5.06, 2.02);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-		glVertex2f(4.93, 2.02);	glVertex2f(4.93, 2.73);
-		glVertex2f(5.06, 2.73);	glVertex2f(5.06, 2.02);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                glVertex2f(4.93, 2.74);	glVertex2f(5.33, 2.00);
+                glVertex2f(5.44, 2.00);	glVertex2f(5.06, 2.74);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-		glVertex2f(4.93, 2.73);	glVertex2f(5.33, 2.01);
-		glVertex2f(5.44, 2.01);	glVertex2f(5.06, 2.74);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                glVertex2f(5.33, 2.00);	glVertex2f(5.33, 2.74);
+                glVertex2f(5.44, 2.74);	glVertex2f(5.45, 2.00);
+            glEnd();
+        glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-		glVertex2f(5.33, 2.02);	glVertex2f(5.33, 2.74);
-		glVertex2f(5.44, 2.74);	glVertex2f(5.45, 2.02);
-  glEnd();
-  glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-3.0,-3.0,0.0);
+            glBegin(GL_QUADS);
+                glVertex2f(2.66, 2.86);	glVertex2f(2.66, 3.00);
+                glVertex2f(4.14, 3.00);	glVertex2f(4.14, 2.86);
+            glEnd();
+        glPopMatrix();
+    glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-3.0,-3.0,0.0);
-  glBegin(GL_QUADS);
-		glVertex2f(2.67, 2.87);	glVertex2f(2.65, 3.01);
-		glVertex2f(4.13, 3.02);	glVertex2f(4.14, 2.86);
-	glEnd();
-  glPopMatrix();
-
-  glFlush();
+    glFlush();
     glutSwapBuffers();
-    delay(2);
+    delay(4);
     glutDisplayFunc(Titulo1);
 }
 
@@ -533,8 +536,8 @@ void Titulo1(){
 }
 //Mostra alguma outra coisa
 void Titulo2(){
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
-      
+   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
+
     glColor3f(1.0,1.0,1.0);
     	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -542,7 +545,23 @@ void Titulo2(){
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluOrtho2D(-1.0,1.0,-1.0,1.0);
-    MsgGde("Grupo", -.1,0, branco);
+    MsgGde("Eduardo" ,-0.2 ,0.2 , branco);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    MsgGde("Fernando" ,-0.2, 0.1, branco);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    MsgGde("Magno" ,-0.2, 0.0, branco);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    MsgGde("Takaki" ,-0.2, -0.1, branco);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    MsgGde("Yoji" ,-0.2, -0.2, branco);
 
     glFlush();
     glutSwapBuffers();
@@ -552,10 +571,10 @@ void Titulo2(){
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHT1);
     glEnable(GL_COLOR_MATERIAL);
-    
+
     ambiente[0] = 0.0;  ambiente[1] = 0.0;  ambiente[2] = 0.0;  ambiente[4] = 1.0;
     glLightfv(GL_LIGHT1, GL_AMBIENT, ambiente);
-    
+
     GLfloat difusao[]={1.0, 1.0, 1.0, 1.0};
     glLightfv(GL_LIGHT0, GL_DIFFUSE, difusao);
 

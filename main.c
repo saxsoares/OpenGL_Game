@@ -8,7 +8,7 @@ void TimerFunc(int valor){
         }else{
             speed = 0.98 * speed > 8 ? 0.98 * speed : 2;
             pos = pos - 0.5;
-            pontuacao -= 1;
+            pontuacao -= 3;
             posBot += 2;
             if(viraCarro > 0){
                 viraCarro = viraCarro * 0.90;
@@ -28,7 +28,7 @@ void TimerFunc(int valor){
     }else if(!isTouchingRight() && !isTouchingLeft()){
         pontuacao += 0.2;
     }
-    sprintf(pontuacaoStr, "%.0f", pontuacao);
+    sprintf(pontuacaoStr, "Points: %.0f", pontuacao);
         
     while(pos >= tamPista){
         pos -= tamPista;
@@ -109,6 +109,7 @@ void DesenhaPista(){
 
         
     }
+    glutPostRedisplay();
 }
 
 void DesenhaBots(GLfloat *cor, GLint dzBot, GLint dx){
@@ -160,18 +161,13 @@ void DesenhaBots(GLfloat *cor, GLint dzBot, GLint dx){
             pontuacao -= 3;
         }
     }
+    glutPostRedisplay();
 }
 
 void Desenha(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
-    glColor3f(1.0,1.0,1.0);
+    // glColor3f(1.0,1.0,1.0);
     
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluOrtho2D(-1.0,1.0,-1.0,1.0);
-    MsgGde(pontuacaoStr, -.9,.9, branco);
     InitScreen();
     // Pista
     glPushMatrix();
@@ -181,8 +177,8 @@ void Desenha(){
     glPushMatrix();
         glTranslatef(carPosX, 0,  -180);
         glTranslatef(0,0,-5);
-        glRotatef(viraCarro - Pontos.ponto[pos].curve * 2000, 0, 1, 0);
-        glRotatef(-0.5*viraCarro + Pontos.ponto[pos].curve * 2000, 0, 0, 1);
+        glRotatef(viraCarro - Pontos.ponto[pos].curve * 1800, 0, 1, 0);
+        glRotatef(-0.4*viraCarro + Pontos.ponto[pos].curve * 2000, 0, 0, 1);
         glTranslatef(0,0, 5);
         glScalef(s_car, s_car, s_car);
         glLightfv(GL_LIGHT0, GL_POSITION, posicao);
@@ -250,6 +246,14 @@ void Desenha(){
     while(posBot >= tamPista) posBot -= tamPista;
     while(posBot < 0)        posBot += tamPista;
 
+    glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluOrtho2D(-1.0,1.0,-1.0,1.0);
+    glLightfv(GL_LIGHT0, GL_POSITION, posicao);
+    MsgGde(pontuacaoStr, -.1,.9, branco);
+    
     glFlush();
     glutSwapBuffers();
 }
