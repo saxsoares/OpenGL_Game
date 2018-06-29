@@ -28,7 +28,7 @@ void TimerFunc(int valor){
     }else if(!isTouchingRight() && !isTouchingLeft()){
         pontuacao += 0.2;
     }
-    sprintf(pontuacaoStr, "Points: %.0f", pontuacao);
+    sprintf(pontuacaoStr, "Speed: %.0f light-year/s                             Points: %.0f",speed, pontuacao);
         
     while(pos >= tamPista){
         pos -= tamPista;
@@ -81,7 +81,12 @@ void TimerFunc(int valor){
         speed -= 0.02;
         pontuacao -= 1;
     }
-
+    if(anima && Pontos.ponto[pos].curve > 0.0){
+        posCeu -= speed;
+    }
+    if(anima && Pontos.ponto[pos].curve < 0.0){
+        posCeu += speed;
+    }
     InitScreen();
     if(anima)
         glutTimerFunc(5, TimerFunc, f);
@@ -95,13 +100,20 @@ void DesenhaPista(){
     dx = 0;
     glPushMatrix();
         glTranslatef(posCeu,0,-2000);
-        for(int i = 0; i < 150; i++){
+        for(int i = 0; i < 200; i++){
             glPushMatrix();
                 glColor3f(R-B,G-B,1);
                 glTranslatef(vetorEstrelasX[i],vetorEstrelasY[i],0);
                 glutSolidSphere(3,10,10);
             glPopMatrix();
         }
+        glPushMatrix();
+            glColor3f(1,1,1);
+            glTranslatef(0,-200,0);
+            glTranslatef(1000,800*(R-B),0);
+            glutSolidSphere(70,50,50);
+            
+        glPopMatrix();
     glPopMatrix();
     // Pontos.ponto[posBot].bot = true;
     for(n = pos; n < pos+2500; n++){
@@ -181,6 +193,7 @@ void DesenhaBots(GLfloat *cor, GLint dzBot, GLint dx){
 
 void Desenha(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
+    glLoadIdentity();
     // glColor3f(1.0,1.0,1.0);
     
     InitScreen();
@@ -239,12 +252,6 @@ void Desenha(){
                 viraCarro = viraCarro > 25 ? viraCarro : viraCarro + 1.5;
             viraCarro = viraCarro > 25 ? viraCarro : viraCarro + 0.8;
             if(anima) speed = speed > 1 ? speed + abs(carPosX) * 0.0001 * speed/(15+(volta*2)) : 1;
-             if(anima && Pontos.ponto[pos].curve > 0.0){
-                posCeu -= 10;
-            }
-            if(anima && Pontos.ponto[pos].curve < 0.0){
-                posCeu += 10;
-            }
         }
         if(botoes[3] && !isTouchingRight()){ // impedir virar pra direita quando estiver fora da pista
             carPosX = carPosX <= larPista/2+30? carPosX + 1.5 * speed/(15+(volta*2)): carPosX;
@@ -252,12 +259,6 @@ void Desenha(){
                 viraCarro = viraCarro < -25 ? viraCarro : viraCarro - 1.5;
             viraCarro = viraCarro < -25 ? viraCarro : viraCarro - 0.8;
             if(anima) speed = speed > 1 ? speed + abs(carPosX) * 0.0001 * speed/(15+(volta*2)): 1;
-            if(anima && Pontos.ponto[pos].curve > 0.0){
-                posCeu -= 10;
-            }
-            if(anima && Pontos.ponto[pos].curve < 0.0){
-                posCeu += 10;
-            }
         }
         
         if(!botoes[2] && !botoes[3]){
@@ -279,7 +280,7 @@ void Desenha(){
     glLoadIdentity();
     gluOrtho2D(-1.0,1.0,-1.0,1.0);
     glLightfv(GL_LIGHT0, GL_POSITION, posicao);
-    MsgGde(pontuacaoStr, -.1,.9, branco);
+    MsgGde(pontuacaoStr, -.7,.99, branco);
     
     glFlush();
     glutSwapBuffers();
@@ -300,11 +301,11 @@ int main(int argc, char *argv[]){
     GLboolean flagCor = false;
     x = 0; dx = 0;
     initArray(&Pontos, tamPista+2);
-    for(int j = 0; j < 150; j++){
+    for(int j = 0; j < 200; j++){
         vetorEstrelasX[j] = (rand()%10000)-5000;
     }
-    for(int j = 0; j < 150; j++){
-        vetorEstrelasY[j] = rand()%800;
+    for(int j = 0; j < 200; j++){
+        vetorEstrelasY[j] = rand()%1000;
     }
     for(int i = 0; i < tamPista; i++){
         Ponto_t ponto;

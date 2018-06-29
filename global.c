@@ -257,9 +257,9 @@ GLboolean flagIntro = false;
 void TimerFuncIntro(int valor){
     int f = valor+1;
     if(posAct < 0)
-        posAct += 0.0009;
+        posAct += 0.001;
     glutPostRedisplay();
-    if(valor < 150)
+    if(valor < 100)
         glutTimerFunc(60,TimerFuncIntro, f);
     else
         flagIntro = true;
