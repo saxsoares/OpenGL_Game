@@ -28,7 +28,7 @@ void TimerFunc(int valor){
     }else if(!isTouchingRight() && !isTouchingLeft()){
         pontuacao += 0.2;
     }
-    sprintf(pontuacaoStr, "Speed: %.0f light-year/s                             Points: %.0f",speed, pontuacao);
+    sprintf(pontuacaoStr, "Speed: %.0f km/h                             Points: %.0f",(speed-1)*7, pontuacao);
         
     while(pos >= tamPista){
         pos -= tamPista;

@@ -92,6 +92,7 @@ void Msg(char *, GLfloat , GLfloat );
 void Msg2(char *string, GLfloat x, GLfloat y, GLfloat *cor);
 void Titulo1();
 void Titulo2();
+void Titulo3();
 void Desenha();
 void DesenhaGrade();
 void DesenhaCarro(GLfloat *);

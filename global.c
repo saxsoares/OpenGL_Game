@@ -22,6 +22,9 @@ GLboolean anima = false, colidiu = false;
 GLint contaCor = 0, voltaAnt = 0; 
 GLfloat pontuacao = 0, posCeu = 0, R = 1, G = 1, B = 0;
 GLchar pontuacaoStr[12];
+GLfloat posAct = -1.9, Ytitulo1 = 0, Xtitulo1 = 0;
+GLboolean flagIntro = false, flagIntro2= false;
+GLboolean flagIntro3 = false, flagIntro4 = false;
 
 
 // Pista
@@ -95,7 +98,7 @@ void Msg2(char *string, GLfloat x, GLfloat y, GLfloat *cor){
         glLoadIdentity();
         gluLookAt(0, 0, 10, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0); // Altere aqui para visualizar diferentes estilos, seta 3 item para algo 10 pra tu ver
         glScalef(.005,.005,.005); // AUmenta e diminui o tamanho da letra
-        glTranslatef(-300, y, 0);
+        glTranslatef(-300+x, y, 0);
             
         glColor3fv(cor);
         glLineWidth(15.0);
@@ -282,8 +285,7 @@ void SpecialKeys (int key, int x, int y){
     }
     printf("posBot: %d\n", posBot);
 }
-GLfloat posAct = -1.9, Ytitulo1 = 0;
-GLboolean flagIntro = false,flagIntro2= false, flagIntro3 = false;
+
 void TimerFuncIntro(int valor){
     int f = valor+1;
     if(posAct < 0)
@@ -596,12 +598,41 @@ void Titulo2(){
     MsgGde("Magno"      ,-0.125 , 0, branco);
     MsgGde("Takaki"     ,-0.125 ,-0.1, branco);
     MsgGde("Yoji"       ,-0.09  ,-0.2, branco);
-    
-    
+      
     glFlush();
     glutSwapBuffers();
     if(flagIntro3){
-        glutDisplayFunc(Desenha);
+        glutDisplayFunc(Titulo3);
         ambiente[0] = 0.0;  ambiente[1] = 0.0;  ambiente[2] = 0.0;  ambiente[4] = 1.0;
     }
+}
+
+
+void TimerFuncIntro4(int valor){
+    int f = valor+1;
+    if(Xtitulo1 < 100)
+        Xtitulo1 += 0.01;
+    glutPostRedisplay();
+    if(valor < 20)
+        glutTimerFunc(2,TimerFuncIntro4 ,f );
+    else
+        flagIntro4 = true;
+}
+
+void Titulo3(){
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
+
+    glutTimerFunc(0,TimerFuncIntro4, 0);
+    gluOrtho2D(-1.0,1.0,-1.0,1.0);
+    Msg2("Enduro", (-0.1+(500*Xtitulo1)) ,Ytitulo1, verdeGrama);
+    MsgGde("Eduardo"    ,(-0.14+Xtitulo1)  , 0.2, branco);
+    MsgGde("Fernando"   ,(-0.16+Xtitulo1)   , 0.1, branco);
+    MsgGde("Magno"      ,(-0.125+Xtitulo1) , 0.0, branco);
+    MsgGde("Takaki"     ,(-0.125+Xtitulo1) , -0.1, branco);
+    MsgGde("Yoji"       ,(-0.09+Xtitulo1)  , -0.2, branco);
+
+    glFlush();
+    glutSwapBuffers();
+    if(flagIntro4)
+        glutDisplayFunc(Desenha);
 }
