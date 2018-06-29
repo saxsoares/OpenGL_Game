@@ -79,6 +79,7 @@ void MsgGde(char *string, GLfloat x, GLfloat y, GLfloat *cor){
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluOrtho2D(-1.0,1.0,-1.0,1.0);
+    glLightfv(GL_LIGHT0, GL_POSITION, posicao);
     glColor3fv(cor);
     glRasterPos2f(x,y);
     while(*string)
@@ -120,7 +121,7 @@ void InitScreen(){
                   V_x,   V_y,   V_z);
     glPopMatrix();
     glLightfv(GL_LIGHT1, GL_AMBIENT, ambiente);
-  
+    
     //Controle do ambiente
     if(volta != voltaAnt2){
         voltaAnt2 = volta;
@@ -573,9 +574,6 @@ void Titulo1(){
 
     glFlush();
     glutSwapBuffers();
-        
-    glFlush();
-    glutSwapBuffers();
     if(flagIntro2)
         glutDisplayFunc(Titulo2);
 }
@@ -593,15 +591,17 @@ void Titulo2(){
     glutTimerFunc(0,TimerFuncIntro3, 0);
     gluOrtho2D(-1.0,1.0,-1.0,1.0);
     Msg2("Enduro", -.1,Ytitulo1, verdeGrama);
-    MsgGde("Eduardo"    ,-0.14  , 0.4, branco);
-    MsgGde("Fernando"   ,-0.16   , 0.3, branco);
-    MsgGde("Magno"      ,-0.125 , 0.2, branco);
-    MsgGde("Takaki"     ,-0.125 , 0.1, branco);
-    MsgGde("Yoji"       ,-0.09  , 0.0, branco);
+    MsgGde("Eduardo"    ,-0.14  , 0.2, branco);
+    MsgGde("Fernando"   ,-0.16  , 0.1, branco);
+    MsgGde("Magno"      ,-0.125 , 0, branco);
+    MsgGde("Takaki"     ,-0.125 ,-0.1, branco);
+    MsgGde("Yoji"       ,-0.09  ,-0.2, branco);
     
     
     glFlush();
     glutSwapBuffers();
-    if(flagIntro3)
+    if(flagIntro3){
         glutDisplayFunc(Desenha);
+        ambiente[0] = 0.0;  ambiente[1] = 0.0;  ambiente[2] = 0.0;  ambiente[4] = 1.0;
+    }
 }

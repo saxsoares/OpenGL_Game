@@ -133,8 +133,6 @@ void DesenhaPista(){
         DesenhaSeg(p1->cor? roadColorA: roadColorB,   
                     p1->x, p1->y,   p1->z+pos-(n-1>=tamPista?tamPista:0), 
                     p2->x, p2->y,   p2->z+pos-(n  >=tamPista?tamPista:0), larPista);
-
-        
     }
     glutPostRedisplay();
 }
@@ -195,19 +193,18 @@ void Desenha(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
     glLoadIdentity();
     // glColor3f(1.0,1.0,1.0);
-    //Iluminacao
+    
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHT1);
     glEnable(GL_COLOR_MATERIAL);
 
-    ambiente[0] = 0.0;  ambiente[1] = 0.0;  ambiente[2] = 0.0;  ambiente[4] = 1.0;
     glLightfv(GL_LIGHT1, GL_AMBIENT, ambiente);
 
     GLfloat difusao[]={1.0, 1.0, 1.0, 1.0};
     glLightfv(GL_LIGHT0, GL_DIFFUSE, difusao);
-
     InitScreen();
+    //Iluminacao
     // Pista
     glPushMatrix();
         DesenhaPista();
@@ -285,7 +282,6 @@ void Desenha(){
     while(posBot >= tamPista) posBot -= tamPista;
     while(posBot < 0)        posBot += tamPista;
 
-    glLightfv(GL_LIGHT0, GL_POSITION, posicao);
     MsgGde(pontuacaoStr, -.7,.99, branco);
     
     glFlush();
