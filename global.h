@@ -45,7 +45,7 @@ extern GLdouble x_0,    y_0,    z_0,
 // Game
 extern GLboolean anima, colidiu;
 extern GLint volta, contaCor, voltaAnt;
-GLint posQndoBateu, voltaAnt2,contaCor2, vetorEstrelasY[100], vetorEstrelasX[100];
+GLint posQndoBateu, voltaAnt2,contaCor2, vetorEstrelasY[150], vetorEstrelasX[150];
 GLfloat ambiente[5], posicao[4];
 extern GLfloat pontuacao, posCeu, R, G, B;
 extern GLchar pontuacaoStr[12];

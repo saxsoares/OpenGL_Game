@@ -252,15 +252,15 @@ void SpecialKeys (int key, int x, int y){
     }
     printf("posBot: %d\n", posBot);
 }
-GLfloat posAct = -1.8;
+GLfloat posAct = -1.9;
 GLboolean flagIntro = false;
 void TimerFuncIntro(int valor){
     int f = valor+1;
     if(posAct < 0)
-        posAct += 0.0005;
+        posAct += 0.0009;
     glutPostRedisplay();
-    if(valor < 50)
-        glutTimerFunc(70,TimerFuncIntro, f);
+    if(valor < 150)
+        glutTimerFunc(60,TimerFuncIntro, f);
     else
         flagIntro = true;
 }

@@ -95,11 +95,11 @@ void DesenhaPista(){
     dx = 0;
     glPushMatrix();
         glTranslatef(posCeu,0,-2000);
-        for(int i = 0; i < 100; i++){
+        for(int i = 0; i < 150; i++){
             glPushMatrix();
                 glColor3f(R-B,G-B,1);
                 glTranslatef(vetorEstrelasX[i],vetorEstrelasY[i],0);
-                glutSolidSphere(5,10,10);
+                glutSolidSphere(3,10,10);
             glPopMatrix();
         }
     glPopMatrix();
@@ -300,10 +300,10 @@ int main(int argc, char *argv[]){
     GLboolean flagCor = false;
     x = 0; dx = 0;
     initArray(&Pontos, tamPista+2);
-    for(int j = 0; j < 100; j++){
-        vetorEstrelasX[j] = (rand()%8000)-4000;
+    for(int j = 0; j < 150; j++){
+        vetorEstrelasX[j] = (rand()%10000)-5000;
     }
-    for(int j = 0; j < 100; j++){
+    for(int j = 0; j < 150; j++){
         vetorEstrelasY[j] = rand()%800;
     }
     for(int i = 0; i < tamPista; i++){
