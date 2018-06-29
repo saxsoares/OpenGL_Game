@@ -63,17 +63,46 @@ void delay(float secs){
 }
 
 void Msg(char *string, GLfloat x, GLfloat y){
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluOrtho2D(-1.0,1.0,-1.0,1.0);
         glRasterPos2f(x,y);
         while(*string)
              glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12,*string++);
+    glutPostRedisplay();
 }
 void MsgGde(char *string, GLfloat x, GLfloat y, GLfloat *cor){
-        glColor3fv(cor);
-        glRasterPos2f(x,y);
-        while(*string)
-             glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,*string++);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluOrtho2D(-1.0,1.0,-1.0,1.0);
+    glColor3fv(cor);
+    glRasterPos2f(x,y);
+    while(*string)
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,*string++);
+    glutPostRedisplay();
 }
+void Msg2(char *string, GLfloat x, GLfloat y, GLfloat *cor){
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 500.0);
 
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        gluLookAt(0, 0, 10, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0); // Altere aqui para visualizar diferentes estilos, seta 3 item para algo 10 pra tu ver
+        glScalef(.005,.005,.005); // AUmenta e diminui o tamanho da letra
+        glTranslatef(-300, y, 0);
+            
+        glColor3fv(cor);
+        glLineWidth(15.0);
+        while(*string)
+             glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN,*string++);
+        glLineWidth(1.0);
+        glutPostRedisplay();
+}
 
 void InitScreen(){
     w_width = glutGet(GLUT_WINDOW_WIDTH);
@@ -252,15 +281,15 @@ void SpecialKeys (int key, int x, int y){
     }
     printf("posBot: %d\n", posBot);
 }
-GLfloat posAct = -1.9;
-GLboolean flagIntro = false;
+GLfloat posAct = -1.9, Ytitulo1 = 0;
+GLboolean flagIntro = false,flagIntro2= false, flagIntro3 = false;
 void TimerFuncIntro(int valor){
     int f = valor+1;
     if(posAct < 0)
-        posAct += 0.001;
+        posAct += 0.0007;
     glutPostRedisplay();
-    if(valor < 100)
-        glutTimerFunc(60,TimerFuncIntro, f);
+    if(valor < 200)
+        glutTimerFunc(30,TimerFuncIntro, f);
     else
         flagIntro = true;
 }
@@ -525,69 +554,54 @@ void desenha_actvision () {
         glutDisplayFunc(Titulo1);
 }
 
-
+void TimerFuncIntro2(int valor){
+    int f = valor+1;
+    if(Ytitulo1 < 200)
+        Ytitulo1 += 0.2;
+    glutPostRedisplay();
+    if(valor < 100)
+        glutTimerFunc(2,TimerFuncIntro2    , f);
+    else
+        flagIntro2 = true;
+}
 //Mostra o logo do Enduro
 void Titulo1(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
-    glColor3f(1.0,1.0,1.0);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluOrtho2D(-1.0,1.0,-1.0,1.0);
-
-    MsgGde("Enduro", -.1,0, branco);
+       
+    glutTimerFunc(0,TimerFuncIntro2, 0);
+    Msg2("Enduro", 0,Ytitulo1, verdeGrama);
 
     glFlush();
     glutSwapBuffers();
-    delay(2);
-    
+        
+    glFlush();
+    glutSwapBuffers();
+    if(flagIntro2)
         glutDisplayFunc(Titulo2);
+}
+void TimerFuncIntro3(int valor){
+    int f = valor+1;
+    if(valor < 200)
+        glutTimerFunc(20,TimerFuncIntro3    , f);
+    else
+        flagIntro3 = true;
 }
 //Mostra alguma outra coisa
 void Titulo2(){
-   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
-
-    glColor3f(1.0,1.0,1.0);
-    	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
+    
+    glutTimerFunc(0,TimerFuncIntro3, 0);
     gluOrtho2D(-1.0,1.0,-1.0,1.0);
-    MsgGde("Eduardo" ,-0.2 ,0.2 , branco);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    MsgGde("Fernando" ,-0.2, 0.1, branco);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    MsgGde("Magno" ,-0.2, 0.0, branco);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    MsgGde("Takaki" ,-0.2, -0.1, branco);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    MsgGde("Yoji" ,-0.2, -0.2, branco);
-
+    Msg2("Enduro", -.1,Ytitulo1, verdeGrama);
+    MsgGde("Eduardo"    ,-0.14  , 0.4, branco);
+    MsgGde("Fernando"   ,-0.16   , 0.3, branco);
+    MsgGde("Magno"      ,-0.125 , 0.2, branco);
+    MsgGde("Takaki"     ,-0.125 , 0.1, branco);
+    MsgGde("Yoji"       ,-0.09  , 0.0, branco);
+    
+    
     glFlush();
     glutSwapBuffers();
-    delay(2);
-      //Iluminacao
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_LIGHT1);
-    glEnable(GL_COLOR_MATERIAL);
-
-    ambiente[0] = 0.0;  ambiente[1] = 0.0;  ambiente[2] = 0.0;  ambiente[4] = 1.0;
-    glLightfv(GL_LIGHT1, GL_AMBIENT, ambiente);
-
-    GLfloat difusao[]={1.0, 1.0, 1.0, 1.0};
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, difusao);
-
-    glutDisplayFunc(Desenha);
+    if(flagIntro3)
+        glutDisplayFunc(Desenha);
 }

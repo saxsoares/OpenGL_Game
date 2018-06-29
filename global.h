@@ -89,6 +89,7 @@ void Timer(int);
 void TimerFunc(int );
 void Reshape(int, int); 
 void Msg(char *, GLfloat , GLfloat );
+void Msg2(char *string, GLfloat x, GLfloat y, GLfloat *cor);
 void Titulo1();
 void Titulo2();
 void Desenha();

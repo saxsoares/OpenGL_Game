@@ -195,7 +195,18 @@ void Desenha(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
     glLoadIdentity();
     // glColor3f(1.0,1.0,1.0);
-    
+    //Iluminacao
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
+    glEnable(GL_COLOR_MATERIAL);
+
+    ambiente[0] = 0.0;  ambiente[1] = 0.0;  ambiente[2] = 0.0;  ambiente[4] = 1.0;
+    glLightfv(GL_LIGHT1, GL_AMBIENT, ambiente);
+
+    GLfloat difusao[]={1.0, 1.0, 1.0, 1.0};
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, difusao);
+
     InitScreen();
     // Pista
     glPushMatrix();
@@ -274,11 +285,6 @@ void Desenha(){
     while(posBot >= tamPista) posBot -= tamPista;
     while(posBot < 0)        posBot += tamPista;
 
-    glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluOrtho2D(-1.0,1.0,-1.0,1.0);
     glLightfv(GL_LIGHT0, GL_POSITION, posicao);
     MsgGde(pontuacaoStr, -.7,.99, branco);
     
