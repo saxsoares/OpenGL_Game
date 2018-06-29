@@ -43,13 +43,18 @@ void TimerFunc(int valor){
         contaCor = (contaCor+1) % 4;
     }
     if(contaCor == 3){
-        glClearColor(.0f, .0f, 1.0 - ((float)pos/(float)tamPista), .0f);
+        
+        B = ((float)(pos+0.1)/(float)tamPista);// > 0.0 ? ((float)(pos+0.1)/(float)tamPista): 0.0;
+        R = 2*B; G = 2*B;
+        glClearColor(.0f, .0f, 1.0 - B, .0f);
     }
     else if(contaCor == 2){
         glClearColor(.0f, .0f, 1.0, .0f);
     }
     else if(contaCor == 1){
-        glClearColor(.0f, .0f, ((float)pos/(float)tamPista), .0f);
+        B = ((float)pos/(float)tamPista);// > 0.0 ? ((float)pos/(float)tamPista): 0.0;
+        R = 1; G = 1;
+        glClearColor(.0f, .0f, B, .0f);
     }
     else{
         glClearColor(.0f, .0f, 0, .0f);
@@ -92,6 +97,7 @@ void DesenhaPista(){
         glTranslatef(posCeu,0,-2000);
         for(int i = 0; i < 100; i++){
             glPushMatrix();
+                glColor3f(R-B,G-B,1);
                 glTranslatef(vetorEstrelasX[i],vetorEstrelasY[i],0);
                 glutSolidSphere(5,10,10);
             glPopMatrix();
@@ -317,10 +323,10 @@ int main(int argc, char *argv[]){
         // Curvas
         if( i > 1800 && i < 2800) ponto.curve = 0.001;
         if( i > 3800 && i < 4800) ponto.curve = -0.001;
-        if( i > 5800 && i < 8800) ponto.curve = 0.001;
-        if( i > 10000 && i < 13000) ponto.curve = -0.001;
-        if( i > 13800 && i < 15800) ponto.curve = 0.001;
-        if( i > 16800 && i < 19800) ponto.curve = -0.001;
+        if( i > 5800 && i < 9000) ponto.curve = 0.001;
+        if( i > 10500 && i < 13700) ponto.curve = -0.001;
+        // if( i > 13800 && i < 15800) ponto.curve = 0.001;
+        // if( i > 16800 && i < 19800) ponto.curve = -0.001;
 
         insertArray(&Pontos, ponto);
     }

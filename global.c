@@ -20,12 +20,12 @@ GLdouble x_0=0,     y_0=40.0,   z_0= -100,
 // Game
 GLboolean anima = false, colidiu = false;
 GLint contaCor = 0, voltaAnt = 0; 
-GLfloat pontuacao = 0, posCeu = 0;
+GLfloat pontuacao = 0, posCeu = 0, R = 1, G = 1, B = 0;
 GLchar pontuacaoStr[12];
 
 
 // Pista
-GLint tamPista = 19770, larPista = 80, volta = 0;
+GLint tamPista = 19000, larPista = 80, volta = 0;
 
 
 // Jogador
@@ -98,9 +98,9 @@ void InitScreen(){
         contaCor2 = (contaCor2+1) % 4;
     }
     if(contaCor2 == 3){
-        ambiente[0] = 1.0 - ((float)pos/(float)tamPista) >= 0.0 ? 1.0 - ((float)pos/(float)tamPista) : 0.0;
-        ambiente[1] = 1.0 - ((float)pos/(float)tamPista) >= 0.0 ? 1.0 - ((float)pos/(float)tamPista) : 0.0;
-        ambiente[2] = 1.0 - ((float)pos/(float)tamPista) >= 0.0 ? 1.0 - ((float)pos/(float)tamPista) : 0.0;
+        ambiente[0] = 1.0 - B;
+        ambiente[1] = 1.0 - B;
+        ambiente[2] = 1.0 - B;
         ambiente[4] = 1.0;
     }
     else if(contaCor2 == 2){
@@ -110,9 +110,9 @@ void InitScreen(){
         ambiente[4] = 1.0;
     }
     else if(contaCor2 == 1){
-        ambiente[0] = ((float)pos/(float)tamPista) >= 0.0 ? ((float)pos/(float)tamPista) : 0.0;
-        ambiente[1] = ((float)pos/(float)tamPista) >= 0.0 ? ((float)pos/(float)tamPista) : 0.0;
-        ambiente[2] = ((float)pos/(float)tamPista) >= 0.0 ? ((float)pos/(float)tamPista) : 0.0;
+        ambiente[0] = B;
+        ambiente[1] = B;
+        ambiente[2] = B;
         ambiente[4] = 1.0;
     }
     else{
@@ -121,7 +121,7 @@ void InitScreen(){
         ambiente[2] = 0.0;
         ambiente[4] = 1.0;
     }
-    // printf("contador: %d  ambiente[0]: %.3f\n", contaCor2, ambiente[0]);
+    printf("contador: %d  R: %.3f  G: %.3f  B: %.3f\n", contaCor2, R, G, B);
 }
 void FitWindow(GLsizei w, GLsizei h){
     if (w >= h)
@@ -252,7 +252,7 @@ void SpecialKeys (int key, int x, int y){
     }
     printf("posBot: %d\n", posBot);
 }
-GLfloat posAct = -1.6;
+GLfloat posAct = -1.8;
 GLboolean flagIntro = false;
 void TimerFuncIntro(int valor){
     int f = valor+1;
