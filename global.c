@@ -20,12 +20,12 @@ GLdouble x_0=0,     y_0=40.0,   z_0= -100,
 // Game
 GLboolean anima = false, colidiu = false;
 GLint contaCor = 0, voltaAnt = 0; 
-GLfloat pontuacao = 0;
+GLfloat pontuacao = 0, posCeu = 0;
 GLchar pontuacaoStr[12];
 
 
 // Pista
-GLint tamPista = 15000, larPista = 80, volta = 0;
+GLint tamPista = 19770, larPista = 80, volta = 0;
 
 
 // Jogador
@@ -252,15 +252,25 @@ void SpecialKeys (int key, int x, int y){
     }
     printf("posBot: %d\n", posBot);
 }
-GLfloat posAct = 0.0;
+GLfloat posAct = -1.6;
+GLboolean flagIntro = false;
+void TimerFuncIntro(int valor){
+    int f = valor+1;
+    if(posAct < 0)
+        posAct += 0.0005;
+    glutPostRedisplay();
+    if(valor < 50)
+        glutTimerFunc(70,TimerFuncIntro, f);
+    else
+        flagIntro = true;
+}
 void desenha_actvision () {
-    posAct += 0.001;
-
+    
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //limpa o buffer
     glColor3f(1.0,1.0,1.0);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-
+    glutTimerFunc(0,TimerFuncIntro, 0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluOrtho2D(-1.0,1.0,-1.0,1.0);
@@ -511,8 +521,8 @@ void desenha_actvision () {
 
     glFlush();
     glutSwapBuffers();
-    delay(4);
-    glutDisplayFunc(Titulo1);
+    if(flagIntro)
+        glutDisplayFunc(Titulo1);
 }
 
 
@@ -532,7 +542,8 @@ void Titulo1(){
     glFlush();
     glutSwapBuffers();
     delay(2);
-    glutDisplayFunc(Titulo2);
+    
+        glutDisplayFunc(Titulo2);
 }
 //Mostra alguma outra coisa
 void Titulo2(){

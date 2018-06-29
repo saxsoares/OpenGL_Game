@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <GL/glut.h>
+#include <time.h>
 
 #define PI M_PI
 #define false GL_FALSE
@@ -44,9 +45,9 @@ extern GLdouble x_0,    y_0,    z_0,
 // Game
 extern GLboolean anima, colidiu;
 extern GLint volta, contaCor, voltaAnt;
-GLint posQndoBateu, voltaAnt2,contaCor2;
+GLint posQndoBateu, voltaAnt2,contaCor2, vetorEstrelasY[100], vetorEstrelasX[100];
 GLfloat ambiente[5], posicao[4];
-extern GLfloat pontuacao;
+extern GLfloat pontuacao, posCeu;
 extern GLchar pontuacaoStr[12];
 
 // Pista

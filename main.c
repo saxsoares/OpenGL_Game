@@ -88,6 +88,15 @@ void DesenhaPista(){
     int n;
     x= 0;
     dx = 0;
+    glPushMatrix();
+        glTranslatef(posCeu,0,-2000);
+        for(int i = 0; i < 100; i++){
+            glPushMatrix();
+                glTranslatef(vetorEstrelasX[i],vetorEstrelasY[i],0);
+                glutSolidSphere(5,10,10);
+            glPopMatrix();
+        }
+    glPopMatrix();
     // Pontos.ponto[posBot].bot = true;
     for(n = pos; n < pos+2500; n++){
         
@@ -224,6 +233,12 @@ void Desenha(){
                 viraCarro = viraCarro > 25 ? viraCarro : viraCarro + 1.5;
             viraCarro = viraCarro > 25 ? viraCarro : viraCarro + 0.8;
             if(anima) speed = speed > 1 ? speed + abs(carPosX) * 0.0001 * speed/(15+(volta*2)) : 1;
+             if(anima && Pontos.ponto[pos].curve > 0.0){
+                posCeu -= 10;
+            }
+            if(anima && Pontos.ponto[pos].curve < 0.0){
+                posCeu += 10;
+            }
         }
         if(botoes[3] && !isTouchingRight()){ // impedir virar pra direita quando estiver fora da pista
             carPosX = carPosX <= larPista/2+30? carPosX + 1.5 * speed/(15+(volta*2)): carPosX;
@@ -231,6 +246,12 @@ void Desenha(){
                 viraCarro = viraCarro < -25 ? viraCarro : viraCarro - 1.5;
             viraCarro = viraCarro < -25 ? viraCarro : viraCarro - 0.8;
             if(anima) speed = speed > 1 ? speed + abs(carPosX) * 0.0001 * speed/(15+(volta*2)): 1;
+            if(anima && Pontos.ponto[pos].curve > 0.0){
+                posCeu -= 10;
+            }
+            if(anima && Pontos.ponto[pos].curve < 0.0){
+                posCeu += 10;
+            }
         }
         
         if(!botoes[2] && !botoes[3]){
@@ -259,6 +280,7 @@ void Desenha(){
 }
 
 int main(int argc, char *argv[]){
+    srand(time(NULL));
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     sw = glutGet(GLUT_SCREEN_WIDTH);
@@ -272,6 +294,12 @@ int main(int argc, char *argv[]){
     GLboolean flagCor = false;
     x = 0; dx = 0;
     initArray(&Pontos, tamPista+2);
+    for(int j = 0; j < 100; j++){
+        vetorEstrelasX[j] = (rand()%8000)-4000;
+    }
+    for(int j = 0; j < 100; j++){
+        vetorEstrelasY[j] = rand()%800;
+    }
     for(int i = 0; i < tamPista; i++){
         Ponto_t ponto;
         ponto.x = 0;
@@ -290,9 +318,9 @@ int main(int argc, char *argv[]){
         if( i > 1800 && i < 2800) ponto.curve = 0.001;
         if( i > 3800 && i < 4800) ponto.curve = -0.001;
         if( i > 5800 && i < 8800) ponto.curve = 0.001;
-        if( i > 12800 && i < 14800) ponto.curve = -0.001;
-        if( i > 10000 && i < 12000) ponto.curve = 0.001;
-        if( i > 15000 && i < 17000) ponto.curve = -0.001;
+        if( i > 10000 && i < 13000) ponto.curve = -0.001;
+        if( i > 13800 && i < 15800) ponto.curve = 0.001;
+        if( i > 16800 && i < 19800) ponto.curve = -0.001;
 
         insertArray(&Pontos, ponto);
     }

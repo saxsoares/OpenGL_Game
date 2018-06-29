@@ -7,7 +7,7 @@ void DesenhaCarro(GLfloat *cor){
         glTranslatef(-7.0,0.0,-33.0);    
         glRotatef(viraCarro - Pontos.ponto[pos].curve * 2000, 0, 1, 0);//Roda dianteira direita
         glTranslatef(7.0,0.0,33.0);    
-        glColor3f(0.1, 0.1, 0.1);
+        glColor3f(0.05, 0.05, 0.05);
         glBegin(GL_QUADS);
             glVertex3f(-8.5, 0.0, -31.8); glVertex3f(-5.5, 0.0, -31.8);
             glVertex3f(-5.5, 0.0, -34.2); glVertex3f(-8.5, 0.0, -34.2);
@@ -43,7 +43,7 @@ void DesenhaCarro(GLfloat *cor){
             glEnd();
         glPopMatrix();
         //Roda dianteira direita
-        glColor3f(0.1, 0.1, 0.1);
+        glColor3f(0.05, 0.05, 0.05);
         glPushMatrix();
         glTranslatef(7.0,0.0,-33.0);    
         glRotatef(viraCarro - Pontos.ponto[pos].curve * 2000, 0, 1, 0);//Roda dianteira direita
@@ -82,7 +82,7 @@ void DesenhaCarro(GLfloat *cor){
             glEnd();
         glPopMatrix();
         //Roda traseira esquerda
-        glColor3f(0.1, 0.1, 0.1);
+        glColor3f(0.05, 0.05, 0.05);
         glBegin(GL_QUADS);
             glVertex3f(-9.0, 0.0, -5.5);  glVertex3f(-6.0, 0.0, -5.5);
             glVertex3f(-6.0, 0.0, -8.5);   glVertex3f(-9.0, 0.0, -8.5);
